@@ -1,0 +1,8 @@
+**/.idea
+**/.kotlin
+**/node_modules/
+**/dist/
+**/build/
+**/.gradle
+**/.gitignore
+**/.tanstack

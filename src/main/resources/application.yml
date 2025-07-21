@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: mechanic
+garage:
+  api-url:
+  s3-url:
+
+mechanic:
+  browse:
+    enable: false

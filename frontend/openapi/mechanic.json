@@ -1,0 +1,292 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/meta/info": {
+      "get": {
+        "tags": [
+          "meta-controller"
+        ],
+        "operationId": "getMetaInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetaInfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/buckets/{bucketId}": {
+      "get": {
+        "tags": [
+          "bucket-browser-controller"
+        ],
+        "operationId": "listBucketFiles",
+        "parameters": [
+          {
+            "name": "bucketId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListBucketFilesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/buckets/{bucketId}/file": {
+      "get": {
+        "tags": [
+          "bucket-browser-controller"
+        ],
+        "operationId": "getBucketFile",
+        "parameters": [
+          {
+            "name": "bucketId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "bucket-browser-controller"
+        ],
+        "operationId": "deleteBucketFile",
+        "parameters": [
+          {
+            "name": "bucketId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "adminToken": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "adminToken"
+        ]
+      },
+      "MetaInfoResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "browseEnabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "browseEnabled",
+          "version"
+        ]
+      },
+      "BucketEntry": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "FILE",
+              "FOLDER"
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "BucketEntryFile": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BucketEntry"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "size": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "lastModified": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        ],
+        "required": [
+          "lastModified",
+          "path",
+          "size",
+          "type"
+        ]
+      },
+      "BucketEntryFolder": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BucketEntry"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "required": [
+          "path",
+          "type"
+        ]
+      },
+      "ListBucketFilesResponse": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/BucketEntryFile"
+                },
+                {
+                  "$ref": "#/components/schemas/BucketEntryFolder"
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "files"
+        ]
+      }
+    }
+  }
+}

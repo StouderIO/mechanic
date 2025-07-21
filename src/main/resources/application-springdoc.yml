@@ -1,0 +1,7 @@
+garage:
+  api-url: dummy
+  s3-url: dummy
+
+mechanic:
+  browse:
+    enable: true
