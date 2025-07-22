@@ -99,20 +99,23 @@ Contributions are welcome =)
 - [khairul169](https://github.com/khairul169) for the [garage-webui](https://github.com/khairul169/garage-webui), which inspired this project.
 
 ## Screenshots
+### Login
+![login view](.github/screenshots/login.png)
+
 ### Dashboard
 ![dashboard view](.github/screenshots/dashboard.png)
 
 ### Cluster
-![dashboard view](.github/screenshots/cluster.png)
+![cluster view](.github/screenshots/cluster.png)
 
 ### Buckets
-![dashboard view](.github/screenshots/buckets.png)
+![buckets view](.github/screenshots/buckets.png)
 
 ### Bucket manage
-![dashboard view](.github/screenshots/bucket_manage.png)
+![bucket manage view](.github/screenshots/bucket_manage.png)
 
 ### Keys
-![dashboard view](.github/screenshots/keys.png)
+![keys view](.github/screenshots/keys.png)
 
 ### Admin tokens
-![dashboard view](.github/screenshots/admin_tokens.png)
+![admin tokens view](.github/screenshots/admin_tokens.png)
