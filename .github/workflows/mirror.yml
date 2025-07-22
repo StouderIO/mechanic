@@ -15,6 +15,5 @@ jobs:
           fetch-depth: 0
       - name: Mirror to Forgejo
         run: |
-          git config --global credential.username 
           git remote add deuxfleurs https://${{ secrets.DEUXFLEURS_USERNAME }}:${{ secrets.DEUXFLEURS_TOKEN }}@git.deuxfleurs.fr/Xstoudi/mechanic.git
           git push --mirror deuxfleurs
