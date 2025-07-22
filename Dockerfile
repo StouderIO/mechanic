@@ -8,7 +8,7 @@ COPY src src
 COPY frontend frontend
 
 RUN ./gradlew --no-daemon dependencies && \
-    ./gradlew --no-daemon bootJar && \
+    ./gradlew --no-daemon clean build && \
     find /app/build/libs -name "mechanic-*.jar" ! -name "*-plain.jar" -exec cp {} /app/build/libs/mechanic.jar \;
 
 FROM docker.io/eclipse-temurin:21-jre-noble

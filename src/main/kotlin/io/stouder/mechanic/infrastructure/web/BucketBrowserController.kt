@@ -7,6 +7,7 @@ import io.stouder.mechanic.domain.ports.inbound.bucket.GetFileUseCase
 import io.stouder.mechanic.domain.ports.inbound.bucket.ListFilesUseCase
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.context.annotation.Profile
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -21,6 +22,7 @@ import java.nio.file.Paths
 
 @RestController
 @RequestMapping("/api/buckets/{bucketId}")
+@Profile("springdoc")
 @ConditionalOnProperty(prefix = "mechanic.browse", name = ["enable"], havingValue = "true")
 class BucketBrowserController(
     private val listFilesUseCase: ListFilesUseCase,

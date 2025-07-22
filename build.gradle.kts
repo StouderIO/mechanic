@@ -47,8 +47,11 @@ kotlin {
     }
 }
 
-tasks.bootJar {
+tasks.processResources {
     dependsOn(":frontend:copyFrontendToApi")
+}
+
+tasks.bootJar {
     dependsOn(":generateOpenApiDocs")
 }
 
