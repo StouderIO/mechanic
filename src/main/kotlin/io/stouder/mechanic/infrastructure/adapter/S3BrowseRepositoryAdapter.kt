@@ -85,5 +85,6 @@ class S3BrowseRepositoryAdapter(
                 )
             )
         )
+        .forcePathStyle(true)
         .build()
 }
