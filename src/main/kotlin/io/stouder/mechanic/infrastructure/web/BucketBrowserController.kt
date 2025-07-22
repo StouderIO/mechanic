@@ -22,7 +22,6 @@ import java.nio.file.Paths
 
 @RestController
 @RequestMapping("/api/buckets/{bucketId}")
-@Profile("springdoc")
 @ConditionalOnProperty(prefix = "mechanic.browse", name = ["enable"], havingValue = "true")
 class BucketBrowserController(
     private val listFilesUseCase: ListFilesUseCase,
