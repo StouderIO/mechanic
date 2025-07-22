@@ -1,5 +1,10 @@
 <h1 align="center">Mechanic</h1>
 
+<div align="center">
+  <img alt="Mechanic logo" src="https://raw.githubusercontent.com/StouderIO/mechanic/refs/heads/main/frontend/public/mechanic-logo.svg">
+
+</div>
+
 <h2 align="center">
   Your Garage UI
 </h2>
@@ -92,3 +97,5 @@ Contributions are welcome =)
 
 ## Special thanks
 - [khairul169](https://github.com/khairul169) for the [garage-webui](https://github.com/khairul169/garage-webui), which inspired this project.
+
+## Screenshots
