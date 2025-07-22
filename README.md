@@ -40,6 +40,7 @@
 - [Configuration](#configuration)
 - [Development](#development)
 - [Special thanks](#special-thanks)
+- [Screenshots](#screenshots)
 ## Features
 - Cluster status dashboard
 - Cluster and layout management
@@ -73,9 +74,9 @@ Following environment variables can be set to configure Mechanic:
 
 | Variable               | Required                                | Description                                                     |
 |------------------------|-----------------------------------------|-----------------------------------------------------------------|
-| GARAGE_API_URL         | Yes                                     | Garage admin api endpoint                                       |
-| MECHANIC_BROWSE_ENABLE | No                                      | If `true`, Mechanic allow the user to browse buckets it can access. |
-| GARAGE_S3_URL          | Only `MECHANIC_BROWSE_ENABLE` is `true` | Garage s3 endpoint                                              |
+| `GARAGE_API_URL`         | Yes                                     | Garage admin api endpoint                                       |
+| `MECHANIC_BROWSE_ENABLE` | No                                      | If `true`, Mechanic allow the user to browse buckets it can access. |
+| `GARAGE_S3_URL`          | Only `MECHANIC_BROWSE_ENABLE` is `true` | Garage s3 endpoint                                              |
 
 ## Development
 The project is fully bootstrapped using Gradle. Frontend is located in the `frontend` subfolder.
