@@ -62,6 +62,35 @@ Mechanic is available as a single JAR file and docker image.
 $ docker run -e GARAGE_API_URL=http://127.0.0.1:3903 -e MECHANIC_BROWSE_ENABLE=true -e GARAGE_S3_URL=http://127.0.0.1:3900 -p 8080:8080 --restart unless-stopped --name mechanic mechanic:latest
 ```
 ### Docker Compose
+```yaml
+services:
+  garage:
+    container_name: garage
+    image: dxflrs/garage:v2.0.0
+    restart: unless-stopped
+    ports:
+      - 3900:3900
+      - 3901:3901
+      - 3902:3902
+      - 3903:3903
+    volumes:
+      - ./garage.toml:/etc/garage.toml
+      - ./meta:/var/lib/garage/meta
+      - ./data:/var/lib/garage/data
+  mechanic:
+    container_name: mechanic
+    image: 'ghcr.io/stouderio/mechanic:latest'
+    restart: unless-stopped
+    environment:
+      GARAGE_API_URL: http://garage:3903
+      MECHANIC_BROWSE_ENABLE: true
+      GARAGE_S3_URL: http://garage:3900
+    ports:
+      - 3910:8080
+    depends_on:
+      - garage
+      
+```
 
 ### JAR file
 ```shell
