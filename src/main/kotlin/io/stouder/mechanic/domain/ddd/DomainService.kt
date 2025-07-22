@@ -1,4 +1,4 @@
-package app.boardano.domain.ddd
+package io.stouder.mechanic.domain.ddd
 
 @Retention(AnnotationRetention.RUNTIME)
 annotation class DomainService

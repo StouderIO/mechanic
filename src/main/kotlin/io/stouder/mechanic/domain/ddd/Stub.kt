@@ -1,4 +1,4 @@
-package app.boardano.domain.ddd
+package io.stouder.mechanic.domain.ddd
 
 import java.lang.annotation.Inherited
 

@@ -1,6 +1,6 @@
 package io.stouder.mechanic.domain.service
 
-import app.boardano.domain.ddd.DomainService
+import io.stouder.mechanic.domain.ddd.DomainService
 import io.stouder.mechanic.domain.exception.NotAuthenticatedException
 import io.stouder.mechanic.domain.ports.inbound.auth.GetCurrentAdminTokenUseCase
 import io.stouder.mechanic.domain.ports.inbound.auth.LoginUseCase

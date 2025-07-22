@@ -1,7 +1,7 @@
 package io.stouder.mechanic.infrastructure.configuration
 
-import app.boardano.domain.ddd.DomainService
-import app.boardano.domain.ddd.Stub
+import io.stouder.mechanic.domain.ddd.DomainService
+import io.stouder.mechanic.domain.ddd.Stub
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.FilterType
