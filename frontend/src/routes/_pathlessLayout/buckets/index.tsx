@@ -3,8 +3,12 @@ import { useCallback } from 'react'
 import { toast } from 'sonner'
 import BucketCard from '@/components/buckets/bucket-card.tsx'
 import { CreateBucketDialog } from '@/components/buckets/dialogs/create-bucket-dialog.tsx'
+import { CreateBucketForm } from '@/components/buckets/forms/create-bucket-form.tsx'
 import { PageError } from '@/components/composed/page-error'
+import { Card, CardDescription, CardTitle } from '@/components/ui/card.tsx'
 import { Spinner } from '@/components/ui/spinner.tsx'
+import { H2 } from '@/components/ui/typography/h2.tsx'
+import { H3 } from '@/components/ui/typography/h3.tsx'
 import { listBuckets } from '@/generated/orval/garage/bucket/bucket.ts'
 import { getMetaInfo } from '@/generated/orval/mechanic/meta-controller/meta-controller.ts'
 
@@ -35,6 +39,12 @@ function BucketsPage() {
       <div className="flex flex-row-reverse">
         <CreateBucketDialog onCreate={refresh} />
       </div>
+      {buckets.length === 0 && (
+        <H3>
+          No bucket found, maybe you want to create one?{' '}
+          <CreateBucketDialog onCreate={refresh} />
+        </H3>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
         {buckets.map((bucket) => (
           <BucketCard
