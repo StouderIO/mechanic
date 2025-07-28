@@ -37,6 +37,8 @@ import type {
   UpdateClusterLayoutRequest,
 } from '../endpoints.schemas'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
 /**
  * 
 Applies to the cluster the layout changes currently registered as staged layout changes.
@@ -46,15 +48,19 @@ Applies to the cluster the layout changes currently registered as staged layout 
  */
 export const applyClusterLayout = (
   applyClusterLayoutRequest: ApplyClusterLayoutRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<ApplyClusterLayoutResponse>({
-    url: `/proxy/v2/ApplyClusterLayout`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: applyClusterLayoutRequest,
-    signal,
-  })
+  return customInstance<ApplyClusterLayoutResponse>(
+    {
+      url: `/proxy/v2/ApplyClusterLayout`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: applyClusterLayoutRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getApplyClusterLayoutMutationOptions = <
@@ -67,6 +73,7 @@ export const getApplyClusterLayoutMutationOptions = <
     { data: ApplyClusterLayoutRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof applyClusterLayout>>,
   TError,
@@ -74,13 +81,13 @@ export const getApplyClusterLayoutMutationOptions = <
   TContext
 > => {
   const mutationKey = ['applyClusterLayout']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof applyClusterLayout>>,
@@ -88,7 +95,7 @@ export const getApplyClusterLayoutMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return applyClusterLayout(data)
+    return applyClusterLayout(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -111,6 +118,7 @@ export const useApplyClusterLayout = <
       { data: ApplyClusterLayoutRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -128,15 +136,19 @@ export const useApplyClusterLayout = <
  */
 export const clusterLayoutSkipDeadNodes = (
   clusterLayoutSkipDeadNodesRequest: ClusterLayoutSkipDeadNodesRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<ClusterLayoutSkipDeadNodesResponse>({
-    url: `/proxy/v2/ClusterLayoutSkipDeadNodes`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: clusterLayoutSkipDeadNodesRequest,
-    signal,
-  })
+  return customInstance<ClusterLayoutSkipDeadNodesResponse>(
+    {
+      url: `/proxy/v2/ClusterLayoutSkipDeadNodes`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: clusterLayoutSkipDeadNodesRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getClusterLayoutSkipDeadNodesMutationOptions = <
@@ -149,6 +161,7 @@ export const getClusterLayoutSkipDeadNodesMutationOptions = <
     { data: ClusterLayoutSkipDeadNodesRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof clusterLayoutSkipDeadNodes>>,
   TError,
@@ -156,13 +169,13 @@ export const getClusterLayoutSkipDeadNodesMutationOptions = <
   TContext
 > => {
   const mutationKey = ['clusterLayoutSkipDeadNodes']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof clusterLayoutSkipDeadNodes>>,
@@ -170,7 +183,7 @@ export const getClusterLayoutSkipDeadNodesMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return clusterLayoutSkipDeadNodes(data)
+    return clusterLayoutSkipDeadNodes(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -194,6 +207,7 @@ export const useClusterLayoutSkipDeadNodes = <
       { data: ClusterLayoutSkipDeadNodesRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -216,12 +230,14 @@ Returns the cluster's current layout, including:
 *Capacity is given in bytes*
     
  */
-export const getClusterLayout = (signal?: AbortSignal) => {
-  return customInstance<GetClusterLayoutResponse>({
-    url: `/proxy/v2/GetClusterLayout`,
-    method: 'GET',
-    signal,
-  })
+export const getClusterLayout = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetClusterLayoutResponse>(
+    { url: `/proxy/v2/GetClusterLayout`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getGetClusterLayoutQueryKey = () => {
@@ -235,14 +251,15 @@ export const getGetClusterLayoutQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getClusterLayout>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getGetClusterLayoutQueryKey()
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getClusterLayout>>
-  > = ({ signal }) => getClusterLayout(signal)
+  > = ({ signal }) => getClusterLayout(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getClusterLayout>>,
@@ -276,6 +293,7 @@ export function useGetClusterLayout<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -301,6 +319,7 @@ export function useGetClusterLayout<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -318,6 +337,7 @@ export function useGetClusterLayout<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -336,6 +356,7 @@ export function useGetClusterLayout<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -358,12 +379,14 @@ export function useGetClusterLayout<
 Returns the history of layouts in the cluster
     
  */
-export const getClusterLayoutHistory = (signal?: AbortSignal) => {
-  return customInstance<GetClusterLayoutHistoryResponse>({
-    url: `/proxy/v2/GetClusterLayoutHistory`,
-    method: 'GET',
-    signal,
-  })
+export const getClusterLayoutHistory = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetClusterLayoutHistoryResponse>(
+    { url: `/proxy/v2/GetClusterLayoutHistory`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getGetClusterLayoutHistoryQueryKey = () => {
@@ -381,15 +404,16 @@ export const getGetClusterLayoutHistoryQueryOptions = <
       TData
     >
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey =
     queryOptions?.queryKey ?? getGetClusterLayoutHistoryQueryKey()
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getClusterLayoutHistory>>
-  > = ({ signal }) => getClusterLayoutHistory(signal)
+  > = ({ signal }) => getClusterLayoutHistory(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getClusterLayoutHistory>>,
@@ -423,6 +447,7 @@ export function useGetClusterLayoutHistory<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -448,6 +473,7 @@ export function useGetClusterLayoutHistory<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -465,6 +491,7 @@ export function useGetClusterLayoutHistory<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -483,6 +510,7 @@ export function useGetClusterLayoutHistory<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -507,12 +535,14 @@ Computes a new layout taking into account the staged parameters, and returns it 
 *Note: do not try to parse the `message` field of the response, it is given as an array of string specifically because its format is not stable.*
     
  */
-export const previewClusterLayoutChanges = (signal?: AbortSignal) => {
-  return customInstance<PreviewClusterLayoutChangesResponse>({
-    url: `/proxy/v2/PreviewClusterLayoutChanges`,
-    method: 'POST',
-    signal,
-  })
+export const previewClusterLayoutChanges = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<PreviewClusterLayoutChangesResponse>(
+    { url: `/proxy/v2/PreviewClusterLayoutChanges`, method: 'POST', signal },
+    options,
+  )
 }
 
 export const getPreviewClusterLayoutChangesMutationOptions = <
@@ -525,6 +555,7 @@ export const getPreviewClusterLayoutChangesMutationOptions = <
     void,
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof previewClusterLayoutChanges>>,
   TError,
@@ -532,19 +563,19 @@ export const getPreviewClusterLayoutChangesMutationOptions = <
   TContext
 > => {
   const mutationKey = ['previewClusterLayoutChanges']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof previewClusterLayoutChanges>>,
     void
   > = () => {
-    return previewClusterLayoutChanges()
+    return previewClusterLayoutChanges(requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -567,6 +598,7 @@ export const usePreviewClusterLayoutChanges = <
       void,
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -582,12 +614,14 @@ export const usePreviewClusterLayoutChanges = <
 /**
  * Clear staged layout changes
  */
-export const revertClusterLayout = (signal?: AbortSignal) => {
-  return customInstance<GetClusterLayoutResponse>({
-    url: `/proxy/v2/RevertClusterLayout`,
-    method: 'POST',
-    signal,
-  })
+export const revertClusterLayout = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetClusterLayoutResponse>(
+    { url: `/proxy/v2/RevertClusterLayout`, method: 'POST', signal },
+    options,
+  )
 }
 
 export const getRevertClusterLayoutMutationOptions = <
@@ -600,6 +634,7 @@ export const getRevertClusterLayoutMutationOptions = <
     void,
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof revertClusterLayout>>,
   TError,
@@ -607,19 +642,19 @@ export const getRevertClusterLayoutMutationOptions = <
   TContext
 > => {
   const mutationKey = ['revertClusterLayout']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof revertClusterLayout>>,
     void
   > = () => {
-    return revertClusterLayout()
+    return revertClusterLayout(requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -642,6 +677,7 @@ export const useRevertClusterLayout = <
       void,
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -667,15 +703,19 @@ Garage uses internally the International System of Units (SI), it assumes that 1
  */
 export const updateClusterLayout = (
   updateClusterLayoutRequest: UpdateClusterLayoutRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetClusterLayoutResponse>({
-    url: `/proxy/v2/UpdateClusterLayout`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: updateClusterLayoutRequest,
-    signal,
-  })
+  return customInstance<GetClusterLayoutResponse>(
+    {
+      url: `/proxy/v2/UpdateClusterLayout`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateClusterLayoutRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getUpdateClusterLayoutMutationOptions = <
@@ -688,6 +728,7 @@ export const getUpdateClusterLayoutMutationOptions = <
     { data: UpdateClusterLayoutRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateClusterLayout>>,
   TError,
@@ -695,13 +736,13 @@ export const getUpdateClusterLayoutMutationOptions = <
   TContext
 > => {
   const mutationKey = ['updateClusterLayout']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateClusterLayout>>,
@@ -709,7 +750,7 @@ export const getUpdateClusterLayoutMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return updateClusterLayout(data)
+    return updateClusterLayout(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -732,6 +773,7 @@ export const useUpdateClusterLayout = <
       { data: UpdateClusterLayoutRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<

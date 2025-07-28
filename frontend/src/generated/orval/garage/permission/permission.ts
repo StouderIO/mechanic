@@ -23,6 +23,8 @@ import type {
   GetBucketInfoResponse,
 } from '../endpoints.schemas'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
 /**
  * 
 ⚠️ **DISCLAIMER**: Garage's developers are aware that this endpoint has an unconventional semantic. Be extra careful when implementing it, its behavior is not obvious.
@@ -38,15 +40,19 @@ If you want to disallow read for the key, check the DenyBucketKey operation.
  */
 export const allowBucketKey = (
   bucketKeyPermChangeRequest: BucketKeyPermChangeRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetBucketInfoResponse>({
-    url: `/proxy/v2/AllowBucketKey`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: bucketKeyPermChangeRequest,
-    signal,
-  })
+  return customInstance<GetBucketInfoResponse>(
+    {
+      url: `/proxy/v2/AllowBucketKey`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: bucketKeyPermChangeRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getAllowBucketKeyMutationOptions = <
@@ -59,6 +65,7 @@ export const getAllowBucketKeyMutationOptions = <
     { data: BucketKeyPermChangeRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof allowBucketKey>>,
   TError,
@@ -66,13 +73,13 @@ export const getAllowBucketKeyMutationOptions = <
   TContext
 > => {
   const mutationKey = ['allowBucketKey']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof allowBucketKey>>,
@@ -80,7 +87,7 @@ export const getAllowBucketKeyMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return allowBucketKey(data)
+    return allowBucketKey(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -100,6 +107,7 @@ export const useAllowBucketKey = <TError = ErrorType<void>, TContext = unknown>(
       { data: BucketKeyPermChangeRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -127,15 +135,19 @@ If you want the key to have the reading permission, check the AllowBucketKey ope
  */
 export const denyBucketKey = (
   bucketKeyPermChangeRequest: BucketKeyPermChangeRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetBucketInfoResponse>({
-    url: `/proxy/v2/DenyBucketKey`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: bucketKeyPermChangeRequest,
-    signal,
-  })
+  return customInstance<GetBucketInfoResponse>(
+    {
+      url: `/proxy/v2/DenyBucketKey`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: bucketKeyPermChangeRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getDenyBucketKeyMutationOptions = <
@@ -148,6 +160,7 @@ export const getDenyBucketKeyMutationOptions = <
     { data: BucketKeyPermChangeRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof denyBucketKey>>,
   TError,
@@ -155,13 +168,13 @@ export const getDenyBucketKeyMutationOptions = <
   TContext
 > => {
   const mutationKey = ['denyBucketKey']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof denyBucketKey>>,
@@ -169,7 +182,7 @@ export const getDenyBucketKeyMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return denyBucketKey(data)
+    return denyBucketKey(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -189,6 +202,7 @@ export const useDenyBucketKey = <TError = ErrorType<void>, TContext = unknown>(
       { data: BucketKeyPermChangeRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<

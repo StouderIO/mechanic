@@ -5,6 +5,7 @@ import io.stouder.mechanic.domain.BucketId
 import io.stouder.mechanic.domain.ports.inbound.bucket.DeleteFileUseCase
 import io.stouder.mechanic.domain.ports.inbound.bucket.GetFileUseCase
 import io.stouder.mechanic.domain.ports.inbound.bucket.ListFilesUseCase
+import io.stouder.mechanic.domain.ports.inbound.bucket.UploadFileUseCase
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Profile
@@ -15,9 +16,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 import java.nio.file.Paths
 
 @RestController
@@ -26,7 +29,8 @@ import java.nio.file.Paths
 class BucketBrowserController(
     private val listFilesUseCase: ListFilesUseCase,
     private val getFileUseCase: GetFileUseCase,
-    private val deleteFileUseCase: DeleteFileUseCase
+    private val deleteFileUseCase: DeleteFileUseCase,
+    private val uploadFileUseCase: UploadFileUseCase,
 ) {
 
     @GetMapping
@@ -51,8 +55,27 @@ class BucketBrowserController(
 
     @DeleteMapping("/file")
     @Operation(operationId = "deleteBucketFile")
-    fun deleteBucketFile(@PathVariable("bucketId") bucketId: BucketId, @RequestParam path: String) {
+    fun deleteBucketFile(@PathVariable("bucketId") bucketId: BucketId, @RequestParam path: String): ResponseEntity<Unit> {
         this.deleteFileUseCase.deleteFile(bucketId, path)
+        return ResponseEntity.ok().build()
+    }
+
+    @PutMapping("/file")
+    @Operation(operationId = "uploadBucketFiles")
+    fun uploadBucketFiles(@PathVariable("bucketId") bucketId: BucketId, @RequestParam path: String, @RequestParam files: List<MultipartFile>): ResponseEntity<Unit> {
+        files
+            .stream()
+            .filter { it.originalFilename != null }
+            .filter { !it.isEmpty }
+            .forEach {
+                val localPath = if (path.isEmpty()) {
+                    it.originalFilename.orEmpty()
+                } else {
+                    "$path/${it.originalFilename}"
+                }
+                this.uploadFileUseCase.uploadFile(bucketId, localPath, it.bytes)
+            }
+        return ResponseEntity.ok().build()
     }
 }
 

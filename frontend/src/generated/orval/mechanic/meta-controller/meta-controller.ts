@@ -22,12 +22,16 @@ import type { ErrorType } from '../../../../axios-instance'
 import { customInstance } from '../../../../axios-instance'
 import type { MetaInfoResponse } from '../endpoints.schemas'
 
-export const getMetaInfo = (signal?: AbortSignal) => {
-  return customInstance<MetaInfoResponse>({
-    url: `/api/meta/info`,
-    method: 'GET',
-    signal,
-  })
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
+export const getMetaInfo = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<MetaInfoResponse>(
+    { url: `/api/meta/info`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getGetMetaInfoQueryKey = () => {
@@ -41,14 +45,15 @@ export const getGetMetaInfoQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getMetaInfo>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getGetMetaInfoQueryKey()
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getMetaInfo>>> = ({
     signal,
-  }) => getMetaInfo(signal)
+  }) => getMetaInfo(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getMetaInfo>>,
@@ -78,6 +83,7 @@ export function useGetMetaInfo<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -99,6 +105,7 @@ export function useGetMetaInfo<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -112,6 +119,7 @@ export function useGetMetaInfo<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getMetaInfo>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -126,6 +134,7 @@ export function useGetMetaInfo<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getMetaInfo>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {

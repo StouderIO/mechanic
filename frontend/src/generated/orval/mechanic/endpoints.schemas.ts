@@ -55,14 +55,19 @@ export interface ListBucketFilesResponse {
   files: ListBucketFilesResponseFilesItem[]
 }
 
-export type ListBucketFilesParams = {
-  path: string
-}
-
 export type GetBucketFileParams = {
   path: string
 }
 
+export type UploadBucketFilesParams = {
+  path: string
+  files: Blob[]
+}
+
 export type DeleteBucketFileParams = {
+  path: string
+}
+
+export type ListBucketFilesParams = {
   path: string
 }

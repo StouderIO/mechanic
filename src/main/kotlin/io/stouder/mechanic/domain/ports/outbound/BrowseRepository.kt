@@ -7,4 +7,5 @@ interface BrowseRepository {
     fun listFiles(bucketId: BucketId, path: String?): List<BucketEntry>
     fun getFile(bucketId: BucketId, path: String): ByteArray?
     fun deleteFile(bucketId: BucketId, path: String)
+    fun uploadFile(bucketId: BucketId, path: String, content: ByteArray)
 }

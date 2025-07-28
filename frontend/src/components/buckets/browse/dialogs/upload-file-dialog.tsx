@@ -1,6 +1,7 @@
+import { UploadIcon } from 'lucide-react'
 import { useCallback, useState } from 'react'
-import { CreateBucketForm } from '@/components/buckets/forms/create-bucket-form.tsx'
-import { CreateButton } from '@/components/composed/create-button.tsx'
+import { UploadFileForm } from '@/components/buckets/browse/forms/upload-file-form.tsx'
+import { Button } from '@/components/ui/button.tsx'
 import {
   Dialog,
   DialogContent,
@@ -10,10 +11,16 @@ import {
 } from '@/components/ui/dialog.tsx'
 
 interface UploadFileDialogProps {
+  bucketId: string
+  path: string
   onUploaded: () => void
 }
 
-function UploadFileDialog({ onUploaded }: UploadFileDialogProps) {
+function UploadFileDialog({
+  bucketId,
+  path,
+  onUploaded,
+}: UploadFileDialogProps) {
   const [isUploadFileDialogOpen, setUploadFileDialogOpen] = useState(false)
 
   const onUploadedInternal = useCallback(() => {
@@ -27,16 +34,22 @@ function UploadFileDialog({ onUploaded }: UploadFileDialogProps) {
       onOpenChange={setUploadFileDialogOpen}
     >
       <DialogTrigger asChild>
-        <CreateButton />
+        <Button>
+          <UploadIcon /> Upload
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Upload files</DialogTitle>
-          <CreateBucketForm onCreate={onUploadedInternal} />
+          <UploadFileForm
+            bucketId={bucketId}
+            path={path}
+            onUploaded={onUploadedInternal}
+          />
         </DialogHeader>
       </DialogContent>
     </Dialog>
   )
 }
 
-export type { UploadFileDialog }
+export { UploadFileDialog }

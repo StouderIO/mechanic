@@ -39,20 +39,26 @@ import type {
   UpdateBucketRequestBody,
 } from '../endpoints.schemas'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
 /**
  * Removes all incomplete multipart uploads that are older than the specified number of seconds.
  */
 export const cleanupIncompleteUploads = (
   cleanupIncompleteUploadsRequest: CleanupIncompleteUploadsRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<CleanupIncompleteUploadsResponse>({
-    url: `/proxy/v2/CleanupIncompleteUploads`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: cleanupIncompleteUploadsRequest,
-    signal,
-  })
+  return customInstance<CleanupIncompleteUploadsResponse>(
+    {
+      url: `/proxy/v2/CleanupIncompleteUploads`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: cleanupIncompleteUploadsRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getCleanupIncompleteUploadsMutationOptions = <
@@ -65,6 +71,7 @@ export const getCleanupIncompleteUploadsMutationOptions = <
     { data: CleanupIncompleteUploadsRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof cleanupIncompleteUploads>>,
   TError,
@@ -72,13 +79,13 @@ export const getCleanupIncompleteUploadsMutationOptions = <
   TContext
 > => {
   const mutationKey = ['cleanupIncompleteUploads']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof cleanupIncompleteUploads>>,
@@ -86,7 +93,7 @@ export const getCleanupIncompleteUploadsMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return cleanupIncompleteUploads(data)
+    return cleanupIncompleteUploads(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -110,6 +117,7 @@ export const useCleanupIncompleteUploads = <
       { data: CleanupIncompleteUploadsRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -130,15 +138,19 @@ Technically, you can also specify both `globalAlias` and `localAlias` and that w
  */
 export const createBucket = (
   createBucketRequest: CreateBucketRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetBucketInfoResponse>({
-    url: `/proxy/v2/CreateBucket`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: createBucketRequest,
-    signal,
-  })
+  return customInstance<GetBucketInfoResponse>(
+    {
+      url: `/proxy/v2/CreateBucket`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createBucketRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getCreateBucketMutationOptions = <
@@ -151,6 +163,7 @@ export const getCreateBucketMutationOptions = <
     { data: CreateBucketRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createBucket>>,
   TError,
@@ -158,13 +171,13 @@ export const getCreateBucketMutationOptions = <
   TContext
 > => {
   const mutationKey = ['createBucket']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createBucket>>,
@@ -172,7 +185,7 @@ export const getCreateBucketMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return createBucket(data)
+    return createBucket(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -192,6 +205,7 @@ export const useCreateBucket = <TError = ErrorType<void>, TContext = unknown>(
       { data: CreateBucketRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -211,12 +225,14 @@ Deletes a storage bucket. A bucket cannot be deleted if it is not empty.
 **Warning:** this will delete all aliases associated with the bucket!
     
  */
-export const deleteBucket = (signal?: AbortSignal) => {
-  return customInstance<void>({
-    url: `/proxy/v2/DeleteBucket`,
-    method: 'POST',
-    signal,
-  })
+export const deleteBucket = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    { url: `/proxy/v2/DeleteBucket`, method: 'POST', signal },
+    options,
+  )
 }
 
 export const getDeleteBucketMutationOptions = <
@@ -229,6 +245,7 @@ export const getDeleteBucketMutationOptions = <
     void,
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteBucket>>,
   TError,
@@ -236,19 +253,19 @@ export const getDeleteBucketMutationOptions = <
   TContext
 > => {
   const mutationKey = ['deleteBucket']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteBucket>>,
     void
   > = () => {
-    return deleteBucket()
+    return deleteBucket(requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -268,6 +285,7 @@ export const useDeleteBucket = <TError = ErrorType<void>, TContext = unknown>(
       void,
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -290,14 +308,13 @@ and its quotas (if any).
  */
 export const getBucketInfo = (
   params?: GetBucketInfoParams,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetBucketInfoResponse>({
-    url: `/proxy/v2/GetBucketInfo`,
-    method: 'GET',
-    params,
-    signal,
-  })
+  return customInstance<GetBucketInfoResponse>(
+    { url: `/proxy/v2/GetBucketInfo`, method: 'GET', params, signal },
+    options,
+  )
 }
 
 export const getGetBucketInfoQueryKey = (params?: GetBucketInfoParams) => {
@@ -313,15 +330,16 @@ export const getGetBucketInfoQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getBucketInfo>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
 ) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getGetBucketInfoQueryKey(params)
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getBucketInfo>>> = ({
     signal,
-  }) => getBucketInfo(params, signal)
+  }) => getBucketInfo(params, requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getBucketInfo>>,
@@ -352,6 +370,7 @@ export function useGetBucketInfo<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -374,6 +393,7 @@ export function useGetBucketInfo<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -388,6 +408,7 @@ export function useGetBucketInfo<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getBucketInfo>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -403,6 +424,7 @@ export function useGetBucketInfo<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getBucketInfo>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -434,14 +456,13 @@ upload is in progress and not yet finished.
  */
 export const inspectObject = (
   params: InspectObjectParams,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<InspectObjectResponse>({
-    url: `/proxy/v2/InspectObject`,
-    method: 'GET',
-    params,
-    signal,
-  })
+  return customInstance<InspectObjectResponse>(
+    { url: `/proxy/v2/InspectObject`, method: 'GET', params, signal },
+    options,
+  )
 }
 
 export const getInspectObjectQueryKey = (params: InspectObjectParams) => {
@@ -457,15 +478,16 @@ export const getInspectObjectQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof inspectObject>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
 ) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getInspectObjectQueryKey(params)
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof inspectObject>>> = ({
     signal,
-  }) => inspectObject(params, signal)
+  }) => inspectObject(params, requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof inspectObject>>,
@@ -496,6 +518,7 @@ export function useInspectObject<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -518,6 +541,7 @@ export function useInspectObject<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -532,6 +556,7 @@ export function useInspectObject<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof inspectObject>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -547,6 +572,7 @@ export function useInspectObject<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof inspectObject>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -567,12 +593,14 @@ export function useInspectObject<
 /**
  * List all the buckets on the cluster with their UUID and their global and local aliases.
  */
-export const listBuckets = (signal?: AbortSignal) => {
-  return customInstance<ListBucketsResponse>({
-    url: `/proxy/v2/ListBuckets`,
-    method: 'GET',
-    signal,
-  })
+export const listBuckets = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ListBucketsResponse>(
+    { url: `/proxy/v2/ListBuckets`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getListBucketsQueryKey = () => {
@@ -586,14 +614,15 @@ export const getListBucketsQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof listBuckets>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getListBucketsQueryKey()
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof listBuckets>>> = ({
     signal,
-  }) => listBuckets(signal)
+  }) => listBuckets(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof listBuckets>>,
@@ -623,6 +652,7 @@ export function useListBuckets<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -644,6 +674,7 @@ export function useListBuckets<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -657,6 +688,7 @@ export function useListBuckets<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof listBuckets>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -671,6 +703,7 @@ export function useListBuckets<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof listBuckets>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -706,16 +739,20 @@ to change only one of the two quotas.
 export const updateBucket = (
   updateBucketRequestBody: UpdateBucketRequestBody,
   params: UpdateBucketParams,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetBucketInfoResponse>({
-    url: `/proxy/v2/UpdateBucket`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: updateBucketRequestBody,
-    params,
-    signal,
-  })
+  return customInstance<GetBucketInfoResponse>(
+    {
+      url: `/proxy/v2/UpdateBucket`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateBucketRequestBody,
+      params,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getUpdateBucketMutationOptions = <
@@ -728,6 +765,7 @@ export const getUpdateBucketMutationOptions = <
     { data: UpdateBucketRequestBody; params: UpdateBucketParams },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateBucket>>,
   TError,
@@ -735,13 +773,13 @@ export const getUpdateBucketMutationOptions = <
   TContext
 > => {
   const mutationKey = ['updateBucket']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateBucket>>,
@@ -749,7 +787,7 @@ export const getUpdateBucketMutationOptions = <
   > = (props) => {
     const { data, params } = props ?? {}
 
-    return updateBucket(data, params)
+    return updateBucket(data, params, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -769,6 +807,7 @@ export const useUpdateBucket = <TError = ErrorType<void>, TContext = unknown>(
       { data: UpdateBucketRequestBody; params: UpdateBucketParams },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<

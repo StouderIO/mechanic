@@ -24,20 +24,26 @@ import type {
   RemoveBucketAliasRequest,
 } from '../endpoints.schemas'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
 /**
  * Add an alias for the target bucket.  This can be either a global or a local alias, depending on which fields are specified.
  */
 export const addBucketAlias = (
   addBucketAliasRequest: AddBucketAliasRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetBucketInfoResponse>({
-    url: `/proxy/v2/AddBucketAlias`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: addBucketAliasRequest,
-    signal,
-  })
+  return customInstance<GetBucketInfoResponse>(
+    {
+      url: `/proxy/v2/AddBucketAlias`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: addBucketAliasRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getAddBucketAliasMutationOptions = <
@@ -50,6 +56,7 @@ export const getAddBucketAliasMutationOptions = <
     { data: AddBucketAliasRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof addBucketAlias>>,
   TError,
@@ -57,13 +64,13 @@ export const getAddBucketAliasMutationOptions = <
   TContext
 > => {
   const mutationKey = ['addBucketAlias']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof addBucketAlias>>,
@@ -71,7 +78,7 @@ export const getAddBucketAliasMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return addBucketAlias(data)
+    return addBucketAlias(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -91,6 +98,7 @@ export const useAddBucketAlias = <TError = ErrorType<void>, TContext = unknown>(
       { data: AddBucketAliasRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -108,15 +116,19 @@ export const useAddBucketAlias = <TError = ErrorType<void>, TContext = unknown>(
  */
 export const removeBucketAlias = (
   removeBucketAliasRequest: RemoveBucketAliasRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetBucketInfoResponse>({
-    url: `/proxy/v2/RemoveBucketAlias`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: removeBucketAliasRequest,
-    signal,
-  })
+  return customInstance<GetBucketInfoResponse>(
+    {
+      url: `/proxy/v2/RemoveBucketAlias`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: removeBucketAliasRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getRemoveBucketAliasMutationOptions = <
@@ -129,6 +141,7 @@ export const getRemoveBucketAliasMutationOptions = <
     { data: RemoveBucketAliasRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof removeBucketAlias>>,
   TError,
@@ -136,13 +149,13 @@ export const getRemoveBucketAliasMutationOptions = <
   TContext
 > => {
   const mutationKey = ['removeBucketAlias']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof removeBucketAlias>>,
@@ -150,7 +163,7 @@ export const getRemoveBucketAliasMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return removeBucketAlias(data)
+    return removeBucketAlias(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -173,6 +186,7 @@ export const useRemoveBucketAlias = <
       { data: RemoveBucketAliasRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<

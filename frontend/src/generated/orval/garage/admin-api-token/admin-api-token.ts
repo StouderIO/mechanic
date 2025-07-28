@@ -35,20 +35,26 @@ import type {
   UpdateAdminTokenRequestBody,
 } from '../endpoints.schemas'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
 /**
  * Creates a new admin API token
  */
 export const createAdminToken = (
   updateAdminTokenRequestBody: UpdateAdminTokenRequestBody,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<CreateAdminTokenResponse>({
-    url: `/proxy/v2/CreateAdminToken`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: updateAdminTokenRequestBody,
-    signal,
-  })
+  return customInstance<CreateAdminTokenResponse>(
+    {
+      url: `/proxy/v2/CreateAdminToken`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateAdminTokenRequestBody,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getCreateAdminTokenMutationOptions = <
@@ -61,6 +67,7 @@ export const getCreateAdminTokenMutationOptions = <
     { data: UpdateAdminTokenRequestBody },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createAdminToken>>,
   TError,
@@ -68,13 +75,13 @@ export const getCreateAdminTokenMutationOptions = <
   TContext
 > => {
   const mutationKey = ['createAdminToken']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createAdminToken>>,
@@ -82,7 +89,7 @@ export const getCreateAdminTokenMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return createAdminToken(data)
+    return createAdminToken(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -105,6 +112,7 @@ export const useCreateAdminToken = <
       { data: UpdateAdminTokenRequestBody },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -122,14 +130,13 @@ export const useCreateAdminToken = <
  */
 export const deleteAdminToken = (
   params: DeleteAdminTokenParams,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<void>({
-    url: `/proxy/v2/DeleteAdminToken`,
-    method: 'POST',
-    params,
-    signal,
-  })
+  return customInstance<void>(
+    { url: `/proxy/v2/DeleteAdminToken`, method: 'POST', params, signal },
+    options,
+  )
 }
 
 export const getDeleteAdminTokenMutationOptions = <
@@ -142,6 +149,7 @@ export const getDeleteAdminTokenMutationOptions = <
     { params: DeleteAdminTokenParams },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteAdminToken>>,
   TError,
@@ -149,13 +157,13 @@ export const getDeleteAdminTokenMutationOptions = <
   TContext
 > => {
   const mutationKey = ['deleteAdminToken']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteAdminToken>>,
@@ -163,7 +171,7 @@ export const getDeleteAdminTokenMutationOptions = <
   > = (props) => {
     const { params } = props ?? {}
 
-    return deleteAdminToken(params)
+    return deleteAdminToken(params, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -186,6 +194,7 @@ export const useDeleteAdminToken = <
       { params: DeleteAdminTokenParams },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -206,14 +215,13 @@ You can search by specifying the exact token identifier (`id`) or by specifying 
  */
 export const getAdminTokenInfo = (
   params?: GetAdminTokenInfoParams,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetAdminTokenInfoResponse>({
-    url: `/proxy/v2/GetAdminTokenInfo`,
-    method: 'GET',
-    params,
-    signal,
-  })
+  return customInstance<GetAdminTokenInfoResponse>(
+    { url: `/proxy/v2/GetAdminTokenInfo`, method: 'GET', params, signal },
+    options,
+  )
 }
 
 export const getGetAdminTokenInfoQueryKey = (
@@ -235,16 +243,17 @@ export const getGetAdminTokenInfoQueryOptions = <
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
 ) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey =
     queryOptions?.queryKey ?? getGetAdminTokenInfoQueryKey(params)
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getAdminTokenInfo>>
-  > = ({ signal }) => getAdminTokenInfo(params, signal)
+  > = ({ signal }) => getAdminTokenInfo(params, requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getAdminTokenInfo>>,
@@ -279,6 +288,7 @@ export function useGetAdminTokenInfo<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -305,6 +315,7 @@ export function useGetAdminTokenInfo<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -323,6 +334,7 @@ export function useGetAdminTokenInfo<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -342,6 +354,7 @@ export function useGetAdminTokenInfo<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -362,12 +375,14 @@ export function useGetAdminTokenInfo<
 /**
  * Returns all admin API tokens in the cluster.
  */
-export const listAdminTokens = (signal?: AbortSignal) => {
-  return customInstance<ListAdminTokensResponse>({
-    url: `/proxy/v2/ListAdminTokens`,
-    method: 'GET',
-    signal,
-  })
+export const listAdminTokens = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ListAdminTokensResponse>(
+    { url: `/proxy/v2/ListAdminTokens`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getListAdminTokensQueryKey = () => {
@@ -381,14 +396,15 @@ export const getListAdminTokensQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof listAdminTokens>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getListAdminTokensQueryKey()
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminTokens>>> = ({
     signal,
-  }) => listAdminTokens(signal)
+  }) => listAdminTokens(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof listAdminTokens>>,
@@ -422,6 +438,7 @@ export function useListAdminTokens<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -447,6 +464,7 @@ export function useListAdminTokens<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -464,6 +482,7 @@ export function useListAdminTokens<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -482,6 +501,7 @@ export function useListAdminTokens<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -506,15 +526,19 @@ Updates information about the specified admin API token.
  */
 export const updateAdminToken = (
   updateAdminTokenRequestBody: UpdateAdminTokenRequestBody,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetAdminTokenInfoResponse>({
-    url: `/proxy/v2/UpdateAdminToken`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: updateAdminTokenRequestBody,
-    signal,
-  })
+  return customInstance<GetAdminTokenInfoResponse>(
+    {
+      url: `/proxy/v2/UpdateAdminToken`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateAdminTokenRequestBody,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getUpdateAdminTokenMutationOptions = <
@@ -527,6 +551,7 @@ export const getUpdateAdminTokenMutationOptions = <
     { data: UpdateAdminTokenRequestBody },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateAdminToken>>,
   TError,
@@ -534,13 +559,13 @@ export const getUpdateAdminTokenMutationOptions = <
   TContext
 > => {
   const mutationKey = ['updateAdminToken']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateAdminToken>>,
@@ -548,7 +573,7 @@ export const getUpdateAdminTokenMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return updateAdminToken(data)
+    return updateAdminToken(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -571,6 +596,7 @@ export const useUpdateAdminToken = <
       { data: UpdateAdminTokenRequestBody },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<

@@ -28,19 +28,336 @@ import type {
   GetBucketFileParams,
   ListBucketFilesParams,
   ListBucketFilesResponse,
+  UploadBucketFilesParams,
 } from '../endpoints.schemas'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
+export const getBucketFile = (
+  bucketId: string,
+  params: GetBucketFileParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<Blob>(
+    {
+      url: `/api/buckets/${bucketId}/file`,
+      method: 'GET',
+      params,
+      responseType: 'blob',
+      signal,
+    },
+    options,
+  )
+}
+
+export const getGetBucketFileQueryKey = (
+  bucketId: string,
+  params: GetBucketFileParams,
+) => {
+  return [`/api/buckets/${bucketId}/file`, ...(params ? [params] : [])] as const
+}
+
+export const getGetBucketFileQueryOptions = <
+  TData = Awaited<ReturnType<typeof getBucketFile>>,
+  TError = ErrorType<unknown>,
+>(
+  bucketId: string,
+  params: GetBucketFileParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getBucketFile>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetBucketFileQueryKey(bucketId, params)
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBucketFile>>> = ({
+    signal,
+  }) => getBucketFile(bucketId, params, requestOptions, signal)
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!bucketId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getBucketFile>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetBucketFileQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getBucketFile>>
+>
+export type GetBucketFileQueryError = ErrorType<unknown>
+
+export function useGetBucketFile<
+  TData = Awaited<ReturnType<typeof getBucketFile>>,
+  TError = ErrorType<unknown>,
+>(
+  bucketId: string,
+  params: GetBucketFileParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getBucketFile>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getBucketFile>>,
+          TError,
+          Awaited<ReturnType<typeof getBucketFile>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetBucketFile<
+  TData = Awaited<ReturnType<typeof getBucketFile>>,
+  TError = ErrorType<unknown>,
+>(
+  bucketId: string,
+  params: GetBucketFileParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getBucketFile>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getBucketFile>>,
+          TError,
+          Awaited<ReturnType<typeof getBucketFile>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetBucketFile<
+  TData = Awaited<ReturnType<typeof getBucketFile>>,
+  TError = ErrorType<unknown>,
+>(
+  bucketId: string,
+  params: GetBucketFileParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getBucketFile>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+
+export function useGetBucketFile<
+  TData = Awaited<ReturnType<typeof getBucketFile>>,
+  TError = ErrorType<unknown>,
+>(
+  bucketId: string,
+  params: GetBucketFileParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getBucketFile>>, TError, TData>
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions = getGetBucketFileQueryOptions(bucketId, params, options)
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
+export const uploadBucketFiles = (
+  bucketId: string,
+  params: UploadBucketFilesParams,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<unknown>(
+    { url: `/api/buckets/${bucketId}/file`, method: 'PUT', params },
+    options,
+  )
+}
+
+export const getUploadBucketFilesMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof uploadBucketFiles>>,
+    TError,
+    { bucketId: string; params: UploadBucketFilesParams },
+    TContext
+  >
+  request?: SecondParameter<typeof customInstance>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof uploadBucketFiles>>,
+  TError,
+  { bucketId: string; params: UploadBucketFilesParams },
+  TContext
+> => {
+  const mutationKey = ['uploadBucketFiles']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof uploadBucketFiles>>,
+    { bucketId: string; params: UploadBucketFilesParams }
+  > = (props) => {
+    const { bucketId, params } = props ?? {}
+    console.log('requestOptions', requestOptions)
+    return uploadBucketFiles(bucketId, params, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type UploadBucketFilesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof uploadBucketFiles>>
+>
+
+export type UploadBucketFilesMutationError = ErrorType<unknown>
+
+export const useUploadBucketFiles = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof uploadBucketFiles>>,
+      TError,
+      { bucketId: string; params: UploadBucketFilesParams },
+      TContext
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof uploadBucketFiles>>,
+  TError,
+  { bucketId: string; params: UploadBucketFilesParams },
+  TContext
+> => {
+  const mutationOptions = getUploadBucketFilesMutationOptions(options)
+
+  return useMutation(mutationOptions, queryClient)
+}
+export const deleteBucketFile = (
+  bucketId: string,
+  params: DeleteBucketFileParams,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<unknown>(
+    { url: `/api/buckets/${bucketId}/file`, method: 'DELETE', params },
+    options,
+  )
+}
+
+export const getDeleteBucketFileMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteBucketFile>>,
+    TError,
+    { bucketId: string; params: DeleteBucketFileParams },
+    TContext
+  >
+  request?: SecondParameter<typeof customInstance>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteBucketFile>>,
+  TError,
+  { bucketId: string; params: DeleteBucketFileParams },
+  TContext
+> => {
+  const mutationKey = ['deleteBucketFile']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteBucketFile>>,
+    { bucketId: string; params: DeleteBucketFileParams }
+  > = (props) => {
+    const { bucketId, params } = props ?? {}
+
+    return deleteBucketFile(bucketId, params, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type DeleteBucketFileMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteBucketFile>>
+>
+
+export type DeleteBucketFileMutationError = ErrorType<unknown>
+
+export const useDeleteBucketFile = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteBucketFile>>,
+      TError,
+      { bucketId: string; params: DeleteBucketFileParams },
+      TContext
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteBucketFile>>,
+  TError,
+  { bucketId: string; params: DeleteBucketFileParams },
+  TContext
+> => {
+  const mutationOptions = getDeleteBucketFileMutationOptions(options)
+
+  return useMutation(mutationOptions, queryClient)
+}
 export const listBucketFiles = (
   bucketId: string,
   params: ListBucketFilesParams,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<ListBucketFilesResponse>({
-    url: `/api/buckets/${bucketId}`,
-    method: 'GET',
-    params,
-    signal,
-  })
+  return customInstance<ListBucketFilesResponse>(
+    { url: `/api/buckets/${bucketId}`, method: 'GET', params, signal },
+    options,
+  )
 }
 
 export const getListBucketFilesQueryKey = (
@@ -64,16 +381,17 @@ export const getListBucketFilesQueryOptions = <
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
 ) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey =
     queryOptions?.queryKey ?? getListBucketFilesQueryKey(bucketId, params)
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof listBucketFiles>>> = ({
     signal,
-  }) => listBucketFiles(bucketId, params, signal)
+  }) => listBucketFiles(bucketId, params, requestOptions, signal)
 
   return {
     queryKey,
@@ -114,6 +432,7 @@ export function useListBucketFiles<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -141,6 +460,7 @@ export function useListBucketFiles<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -160,6 +480,7 @@ export function useListBucketFiles<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -180,6 +501,7 @@ export function useListBucketFiles<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -195,230 +517,4 @@ export function useListBucketFiles<
   query.queryKey = queryOptions.queryKey
 
   return query
-}
-
-export const getBucketFile = (
-  bucketId: string,
-  params: GetBucketFileParams,
-  signal?: AbortSignal,
-) => {
-  return customInstance<Blob>({
-    url: `/api/buckets/${bucketId}/file`,
-    method: 'GET',
-    params,
-    responseType: 'blob',
-    signal,
-  })
-}
-
-export const getGetBucketFileQueryKey = (
-  bucketId: string,
-  params: GetBucketFileParams,
-) => {
-  return [`/api/buckets/${bucketId}/file`, ...(params ? [params] : [])] as const
-}
-
-export const getGetBucketFileQueryOptions = <
-  TData = Awaited<ReturnType<typeof getBucketFile>>,
-  TError = ErrorType<unknown>,
->(
-  bucketId: string,
-  params: GetBucketFileParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getBucketFile>>, TError, TData>
-    >
-  },
-) => {
-  const { query: queryOptions } = options ?? {}
-
-  const queryKey =
-    queryOptions?.queryKey ?? getGetBucketFileQueryKey(bucketId, params)
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getBucketFile>>> = ({
-    signal,
-  }) => getBucketFile(bucketId, params, signal)
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!bucketId,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof getBucketFile>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetBucketFileQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getBucketFile>>
->
-export type GetBucketFileQueryError = ErrorType<unknown>
-
-export function useGetBucketFile<
-  TData = Awaited<ReturnType<typeof getBucketFile>>,
-  TError = ErrorType<unknown>,
->(
-  bucketId: string,
-  params: GetBucketFileParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getBucketFile>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getBucketFile>>,
-          TError,
-          Awaited<ReturnType<typeof getBucketFile>>
-        >,
-        'initialData'
-      >
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>
-}
-export function useGetBucketFile<
-  TData = Awaited<ReturnType<typeof getBucketFile>>,
-  TError = ErrorType<unknown>,
->(
-  bucketId: string,
-  params: GetBucketFileParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getBucketFile>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getBucketFile>>,
-          TError,
-          Awaited<ReturnType<typeof getBucketFile>>
-        >,
-        'initialData'
-      >
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>
-}
-export function useGetBucketFile<
-  TData = Awaited<ReturnType<typeof getBucketFile>>,
-  TError = ErrorType<unknown>,
->(
-  bucketId: string,
-  params: GetBucketFileParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getBucketFile>>, TError, TData>
-    >
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>
-}
-
-export function useGetBucketFile<
-  TData = Awaited<ReturnType<typeof getBucketFile>>,
-  TError = ErrorType<unknown>,
->(
-  bucketId: string,
-  params: GetBucketFileParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getBucketFile>>, TError, TData>
-    >
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>
-} {
-  const queryOptions = getGetBucketFileQueryOptions(bucketId, params, options)
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> }
-
-  query.queryKey = queryOptions.queryKey
-
-  return query
-}
-
-export const deleteBucketFile = (
-  bucketId: string,
-  params: DeleteBucketFileParams,
-) => {
-  return customInstance<void>({
-    url: `/api/buckets/${bucketId}/file`,
-    method: 'DELETE',
-    params,
-  })
-}
-
-export const getDeleteBucketFileMutationOptions = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteBucketFile>>,
-    TError,
-    { bucketId: string; params: DeleteBucketFileParams },
-    TContext
-  >
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof deleteBucketFile>>,
-  TError,
-  { bucketId: string; params: DeleteBucketFileParams },
-  TContext
-> => {
-  const mutationKey = ['deleteBucketFile']
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof deleteBucketFile>>,
-    { bucketId: string; params: DeleteBucketFileParams }
-  > = (props) => {
-    const { bucketId, params } = props ?? {}
-
-    return deleteBucketFile(bucketId, params)
-  }
-
-  return { mutationFn, ...mutationOptions }
-}
-
-export type DeleteBucketFileMutationResult = NonNullable<
-  Awaited<ReturnType<typeof deleteBucketFile>>
->
-
-export type DeleteBucketFileMutationError = ErrorType<unknown>
-
-export const useDeleteBucketFile = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof deleteBucketFile>>,
-      TError,
-      { bucketId: string; params: DeleteBucketFileParams },
-      TContext
-    >
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof deleteBucketFile>>,
-  TError,
-  { bucketId: string; params: DeleteBucketFileParams },
-  TContext
-> => {
-  const mutationOptions = getDeleteBucketFileMutationOptions(options)
-
-  return useMutation(mutationOptions, queryClient)
 }

@@ -17,12 +17,16 @@ import type { ErrorType } from '../../../../axios-instance'
 import { customInstance } from '../../../../axios-instance'
 import type { LoginRequest } from '../endpoints.schemas'
 
-export const logout = (signal?: AbortSignal) => {
-  return customInstance<void>({
-    url: `/api/auth/logout`,
-    method: 'POST',
-    signal,
-  })
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
+export const logout = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    { url: `/api/auth/logout`, method: 'POST', signal },
+    options,
+  )
 }
 
 export const getLogoutMutationOptions = <
@@ -35,6 +39,7 @@ export const getLogoutMutationOptions = <
     void,
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof logout>>,
   TError,
@@ -42,19 +47,19 @@ export const getLogoutMutationOptions = <
   TContext
 > => {
   const mutationKey = ['logout']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof logout>>,
     void
   > = () => {
-    return logout()
+    return logout(requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -74,6 +79,7 @@ export const useLogout = <TError = ErrorType<unknown>, TContext = unknown>(
       void,
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -86,14 +92,21 @@ export const useLogout = <TError = ErrorType<unknown>, TContext = unknown>(
 
   return useMutation(mutationOptions, queryClient)
 }
-export const login = (loginRequest: LoginRequest, signal?: AbortSignal) => {
-  return customInstance<void>({
-    url: `/api/auth/login`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: loginRequest,
-    signal,
-  })
+export const login = (
+  loginRequest: LoginRequest,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    {
+      url: `/api/auth/login`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: loginRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getLoginMutationOptions = <
@@ -106,6 +119,7 @@ export const getLoginMutationOptions = <
     { data: LoginRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof login>>,
   TError,
@@ -113,13 +127,13 @@ export const getLoginMutationOptions = <
   TContext
 > => {
   const mutationKey = ['login']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof login>>,
@@ -127,7 +141,7 @@ export const getLoginMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return login(data)
+    return login(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -145,6 +159,7 @@ export const useLogin = <TError = ErrorType<unknown>, TContext = unknown>(
       { data: LoginRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<

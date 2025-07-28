@@ -29,6 +29,8 @@ import type {
   MultiResponseLocalSetWorkerVariableResponse,
 } from '../endpoints.schemas'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
 /**
  * 
 Get information about the specified background worker on one or several cluster nodes.
@@ -36,15 +38,19 @@ Get information about the specified background worker on one or several cluster 
  */
 export const getWorkerInfo = (
   localGetWorkerInfoRequest: LocalGetWorkerInfoRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<MultiResponseLocalGetWorkerInfoResponse>({
-    url: `/proxy/v2/GetWorkerInfo`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: localGetWorkerInfoRequest,
-    signal,
-  })
+  return customInstance<MultiResponseLocalGetWorkerInfoResponse>(
+    {
+      url: `/proxy/v2/GetWorkerInfo`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: localGetWorkerInfoRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getGetWorkerInfoMutationOptions = <
@@ -57,6 +63,7 @@ export const getGetWorkerInfoMutationOptions = <
     { data: LocalGetWorkerInfoRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof getWorkerInfo>>,
   TError,
@@ -64,13 +71,13 @@ export const getGetWorkerInfoMutationOptions = <
   TContext
 > => {
   const mutationKey = ['getWorkerInfo']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof getWorkerInfo>>,
@@ -78,7 +85,7 @@ export const getGetWorkerInfoMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return getWorkerInfo(data)
+    return getWorkerInfo(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -98,6 +105,7 @@ export const useGetWorkerInfo = <TError = ErrorType<void>, TContext = unknown>(
       { data: LocalGetWorkerInfoRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -117,15 +125,19 @@ Fetch values of one or several worker variables, from one or several cluster nod
  */
 export const getWorkerVariable = (
   localGetWorkerVariableRequest: LocalGetWorkerVariableRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<MultiResponseLocalGetWorkerVariableResponse>({
-    url: `/proxy/v2/GetWorkerVariable`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: localGetWorkerVariableRequest,
-    signal,
-  })
+  return customInstance<MultiResponseLocalGetWorkerVariableResponse>(
+    {
+      url: `/proxy/v2/GetWorkerVariable`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: localGetWorkerVariableRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getGetWorkerVariableMutationOptions = <
@@ -138,6 +150,7 @@ export const getGetWorkerVariableMutationOptions = <
     { data: LocalGetWorkerVariableRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof getWorkerVariable>>,
   TError,
@@ -145,13 +158,13 @@ export const getGetWorkerVariableMutationOptions = <
   TContext
 > => {
   const mutationKey = ['getWorkerVariable']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof getWorkerVariable>>,
@@ -159,7 +172,7 @@ export const getGetWorkerVariableMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return getWorkerVariable(data)
+    return getWorkerVariable(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -182,6 +195,7 @@ export const useGetWorkerVariable = <
       { data: LocalGetWorkerVariableRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -201,15 +215,19 @@ List background workers currently running on one or several cluster nodes.
  */
 export const listWorkers = (
   localListWorkersRequest: LocalListWorkersRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<MultiResponseLocalListWorkersResponse>({
-    url: `/proxy/v2/ListWorkers`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: localListWorkersRequest,
-    signal,
-  })
+  return customInstance<MultiResponseLocalListWorkersResponse>(
+    {
+      url: `/proxy/v2/ListWorkers`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: localListWorkersRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getListWorkersMutationOptions = <
@@ -222,6 +240,7 @@ export const getListWorkersMutationOptions = <
     { data: LocalListWorkersRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof listWorkers>>,
   TError,
@@ -229,13 +248,13 @@ export const getListWorkersMutationOptions = <
   TContext
 > => {
   const mutationKey = ['listWorkers']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof listWorkers>>,
@@ -243,7 +262,7 @@ export const getListWorkersMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return listWorkers(data)
+    return listWorkers(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -263,6 +282,7 @@ export const useListWorkers = <TError = ErrorType<void>, TContext = unknown>(
       { data: LocalListWorkersRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -282,15 +302,19 @@ Set the value for a worker variable, on one or several cluster nodes.
  */
 export const setWorkerVariable = (
   localSetWorkerVariableRequest: LocalSetWorkerVariableRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<MultiResponseLocalSetWorkerVariableResponse>({
-    url: `/proxy/v2/SetWorkerVariable`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: localSetWorkerVariableRequest,
-    signal,
-  })
+  return customInstance<MultiResponseLocalSetWorkerVariableResponse>(
+    {
+      url: `/proxy/v2/SetWorkerVariable`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: localSetWorkerVariableRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getSetWorkerVariableMutationOptions = <
@@ -303,6 +327,7 @@ export const getSetWorkerVariableMutationOptions = <
     { data: LocalSetWorkerVariableRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof setWorkerVariable>>,
   TError,
@@ -310,13 +335,13 @@ export const getSetWorkerVariableMutationOptions = <
   TContext
 > => {
   const mutationKey = ['setWorkerVariable']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof setWorkerVariable>>,
@@ -324,7 +349,7 @@ export const getSetWorkerVariableMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return setWorkerVariable(data)
+    return setWorkerVariable(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -347,6 +372,7 @@ export const useSetWorkerVariable = <
       { data: LocalSetWorkerVariableRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<

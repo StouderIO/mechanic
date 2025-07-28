@@ -2,8 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useCallback, useMemo } from 'react'
 import { z } from 'zod'
 import { BucketEntriesTable } from '@/components/buckets/browse/bucket-entries-table.tsx'
+import { UploadFileDialog } from '@/components/buckets/browse/dialogs/upload-file-dialog.tsx'
 import { PageError } from '@/components/composed/page-error.tsx'
-
 import { Spinner } from '@/components/ui/spinner.tsx'
 import { listBucketFiles } from '@/generated/orval/mechanic/bucket-browser-controller/bucket-browser-controller.ts'
 import type { BucketEntry } from '@/types/bucket-entry.ts'
@@ -55,7 +55,7 @@ function BrowsePage() {
     [entries, path],
   )
 
-  const onFileDelete = useCallback(
+  const refresh = useCallback(
     () =>
       navigate({
         to: '.',
@@ -79,12 +79,18 @@ function BrowsePage() {
 
   return (
     <div className="flex flex-col w-full gap-4">
-      <div className="flex flex-row-reverse">XXX</div>
+      <div className="flex flex-row-reverse gap-2">
+        <UploadFileDialog
+          bucketId={bucketId}
+          path={path}
+          onUploaded={refresh}
+        />
+      </div>
       <BucketEntriesTable
         bucketId={bucketId}
         entries={normalizedEntries}
         currentPath={path}
-        onFileDelete={onFileDelete}
+        onFileDelete={refresh}
         onFolderClick={onFolderClick}
       />
     </div>

@@ -23,6 +23,8 @@ import { useQuery } from '@tanstack/react-query'
 import type { ErrorType } from '../../../../axios-instance'
 import { customInstance } from '../../../../axios-instance'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
 /**
  * 
 Static website domain name check. Checks whether a bucket is configured to serve
@@ -31,8 +33,14 @@ as Caddy or Tricot, to avoid requesting TLS certificates for domain names that
 do not correspond to an actual website.
     
  */
-export const checkDomain = (signal?: AbortSignal) => {
-  return customInstance<void>({ url: `/proxy/check`, method: 'GET', signal })
+export const checkDomain = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    { url: `/proxy/check`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getCheckDomainQueryKey = () => {
@@ -46,14 +54,15 @@ export const getCheckDomainQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof checkDomain>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getCheckDomainQueryKey()
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof checkDomain>>> = ({
     signal,
-  }) => checkDomain(signal)
+  }) => checkDomain(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof checkDomain>>,
@@ -83,6 +92,7 @@ export function useCheckDomain<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -104,6 +114,7 @@ export function useCheckDomain<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -117,6 +128,7 @@ export function useCheckDomain<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof checkDomain>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -131,6 +143,7 @@ export function useCheckDomain<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof checkDomain>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -156,8 +169,14 @@ Garage will return `200 OK` even if some storage nodes are disconnected,
 as long as it is able to have a quorum of nodes for read and write operations.
     
  */
-export const health = (signal?: AbortSignal) => {
-  return customInstance<void>({ url: `/proxy/health`, method: 'GET', signal })
+export const health = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    { url: `/proxy/health`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getHealthQueryKey = () => {
@@ -171,14 +190,15 @@ export const getHealthQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getHealthQueryKey()
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof health>>> = ({
     signal,
-  }) => health(signal)
+  }) => health(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof health>>,
@@ -206,6 +226,7 @@ export function useHealth<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -227,6 +248,7 @@ export function useHealth<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -240,6 +262,7 @@ export function useHealth<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -254,6 +277,7 @@ export function useHealth<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof health>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -274,8 +298,14 @@ export function useHealth<
 /**
  * Prometheus metrics endpoint
  */
-export const metrics = (signal?: AbortSignal) => {
-  return customInstance<void>({ url: `/proxy/metrics`, method: 'GET', signal })
+export const metrics = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    { url: `/proxy/metrics`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getMetricsQueryKey = () => {
@@ -289,14 +319,15 @@ export const getMetricsQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof metrics>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getMetricsQueryKey()
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof metrics>>> = ({
     signal,
-  }) => metrics(signal)
+  }) => metrics(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof metrics>>,
@@ -326,6 +357,7 @@ export function useMetrics<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -347,6 +379,7 @@ export function useMetrics<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -360,6 +393,7 @@ export function useMetrics<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof metrics>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -374,6 +408,7 @@ export function useMetrics<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof metrics>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {

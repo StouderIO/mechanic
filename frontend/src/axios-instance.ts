@@ -13,11 +13,20 @@ AXIOS_INSTANCE.interceptors.response.use(
   },
 )
 
-export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => {
+export const customInstance = <T>(
+  config: AxiosRequestConfig,
+  options?: AxiosRequestConfig,
+): Promise<T> => {
   const source = Axios.CancelToken.source()
-  const promise = AXIOS_INSTANCE({ ...config, cancelToken: source.token }).then(
-    ({ data }) => data,
-  )
+  console.log('request', {
+    ...config,
+    cancelToken: source.token,
+  })
+  const promise = AXIOS_INSTANCE({
+    ...config,
+    ...options,
+    cancelToken: source.token,
+  }).then(({ data }) => data)
 
   // @ts-ignore
   promise.cancel = source.cancel

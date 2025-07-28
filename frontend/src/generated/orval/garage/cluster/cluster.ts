@@ -34,20 +34,26 @@ import type {
   GetClusterStatusResponse,
 } from '../endpoints.schemas'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
 /**
  * Instructs this Garage node to connect to other Garage nodes at specified `<node_id>@<net_address>`. `node_id` is generated automatically on node start.
  */
 export const connectClusterNodes = (
   connectClusterNodesRequest: ConnectClusterNodesRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<ConnectClusterNodesResponse>({
-    url: `/proxy/v2/ConnectClusterNodes`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: connectClusterNodesRequest,
-    signal,
-  })
+  return customInstance<ConnectClusterNodesResponse>(
+    {
+      url: `/proxy/v2/ConnectClusterNodes`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: connectClusterNodesRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getConnectClusterNodesMutationOptions = <
@@ -60,6 +66,7 @@ export const getConnectClusterNodesMutationOptions = <
     { data: ConnectClusterNodesRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof connectClusterNodes>>,
   TError,
@@ -67,13 +74,13 @@ export const getConnectClusterNodesMutationOptions = <
   TContext
 > => {
   const mutationKey = ['connectClusterNodes']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof connectClusterNodes>>,
@@ -81,7 +88,7 @@ export const getConnectClusterNodesMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return connectClusterNodes(data)
+    return connectClusterNodes(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -104,6 +111,7 @@ export const useConnectClusterNodes = <
       { data: ConnectClusterNodesRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -119,12 +127,14 @@ export const useConnectClusterNodes = <
 /**
  * Returns the global status of the cluster, the number of connected nodes (over the number of known ones), the number of healthy storage nodes (over the declared ones), and the number of healthy partitions (over the total).
  */
-export const getClusterHealth = (signal?: AbortSignal) => {
-  return customInstance<GetClusterHealthResponse>({
-    url: `/proxy/v2/GetClusterHealth`,
-    method: 'GET',
-    signal,
-  })
+export const getClusterHealth = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetClusterHealthResponse>(
+    { url: `/proxy/v2/GetClusterHealth`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getGetClusterHealthQueryKey = () => {
@@ -138,14 +148,15 @@ export const getGetClusterHealthQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getClusterHealth>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getGetClusterHealthQueryKey()
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getClusterHealth>>
-  > = ({ signal }) => getClusterHealth(signal)
+  > = ({ signal }) => getClusterHealth(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getClusterHealth>>,
@@ -179,6 +190,7 @@ export function useGetClusterHealth<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -204,6 +216,7 @@ export function useGetClusterHealth<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -221,6 +234,7 @@ export function useGetClusterHealth<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -239,6 +253,7 @@ export function useGetClusterHealth<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -263,12 +278,14 @@ Fetch global cluster statistics.
 *Note: do not try to parse the `freeform` field of the response, it is given as a string specifically because its format is not stable.*
     
  */
-export const getClusterStatistics = (signal?: AbortSignal) => {
-  return customInstance<GetClusterStatisticsResponse>({
-    url: `/proxy/v2/GetClusterStatistics`,
-    method: 'GET',
-    signal,
-  })
+export const getClusterStatistics = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetClusterStatisticsResponse>(
+    { url: `/proxy/v2/GetClusterStatistics`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getGetClusterStatisticsQueryKey = () => {
@@ -286,14 +303,15 @@ export const getGetClusterStatisticsQueryOptions = <
       TData
     >
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getGetClusterStatisticsQueryKey()
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getClusterStatistics>>
-  > = ({ signal }) => getClusterStatistics(signal)
+  > = ({ signal }) => getClusterStatistics(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getClusterStatistics>>,
@@ -327,6 +345,7 @@ export function useGetClusterStatistics<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -352,6 +371,7 @@ export function useGetClusterStatistics<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -369,6 +389,7 @@ export function useGetClusterStatistics<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -387,6 +408,7 @@ export function useGetClusterStatistics<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -416,12 +438,14 @@ Returns the cluster's current status, including:
 *Capacity is given in bytes*
     
  */
-export const getClusterStatus = (signal?: AbortSignal) => {
-  return customInstance<GetClusterStatusResponse>({
-    url: `/proxy/v2/GetClusterStatus`,
-    method: 'GET',
-    signal,
-  })
+export const getClusterStatus = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetClusterStatusResponse>(
+    { url: `/proxy/v2/GetClusterStatus`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getGetClusterStatusQueryKey = () => {
@@ -435,14 +459,15 @@ export const getGetClusterStatusQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getClusterStatus>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getGetClusterStatusQueryKey()
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getClusterStatus>>
-  > = ({ signal }) => getClusterStatus(signal)
+  > = ({ signal }) => getClusterStatus(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getClusterStatus>>,
@@ -476,6 +501,7 @@ export function useGetClusterStatus<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -501,6 +527,7 @@ export function useGetClusterStatus<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -518,6 +545,7 @@ export function useGetClusterStatus<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -536,6 +564,7 @@ export function useGetClusterStatus<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {

@@ -65,7 +65,7 @@ function AddAliasForm({ bucketId, onClose }: AddAliasFormProps) {
   })
 
   const addAlias = useCallback(
-    async (alias: BucketAliasEnum) => {
+    (alias: BucketAliasEnum) => {
       mutate({
         data: {
           bucketId,

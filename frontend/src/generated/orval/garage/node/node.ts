@@ -34,17 +34,21 @@ import type {
   MultiResponseLocalLaunchRepairOperationResponse,
 } from '../endpoints.schemas'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
 /**
  * 
 Instruct one or several nodes to take a snapshot of their metadata databases.
     
  */
-export const createMetadataSnapshot = (signal?: AbortSignal) => {
-  return customInstance<MultiResponseLocalCreateMetadataSnapshotResponse>({
-    url: `/proxy/v2/CreateMetadataSnapshot`,
-    method: 'POST',
-    signal,
-  })
+export const createMetadataSnapshot = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<MultiResponseLocalCreateMetadataSnapshotResponse>(
+    { url: `/proxy/v2/CreateMetadataSnapshot`, method: 'POST', signal },
+    options,
+  )
 }
 
 export const getCreateMetadataSnapshotMutationOptions = <
@@ -57,6 +61,7 @@ export const getCreateMetadataSnapshotMutationOptions = <
     void,
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createMetadataSnapshot>>,
   TError,
@@ -64,19 +69,19 @@ export const getCreateMetadataSnapshotMutationOptions = <
   TContext
 > => {
   const mutationKey = ['createMetadataSnapshot']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createMetadataSnapshot>>,
     void
   > = () => {
-    return createMetadataSnapshot()
+    return createMetadataSnapshot(requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -99,6 +104,7 @@ export const useCreateMetadataSnapshot = <
       void,
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -116,12 +122,14 @@ export const useCreateMetadataSnapshot = <
 Return information about the Garage daemon running on one or several nodes.
     
  */
-export const getNodeInfo = (signal?: AbortSignal) => {
-  return customInstance<MultiResponseLocalGetNodeInfoResponse>({
-    url: `/proxy/v2/GetNodeInfo`,
-    method: 'GET',
-    signal,
-  })
+export const getNodeInfo = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<MultiResponseLocalGetNodeInfoResponse>(
+    { url: `/proxy/v2/GetNodeInfo`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getGetNodeInfoQueryKey = () => {
@@ -135,14 +143,15 @@ export const getGetNodeInfoQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getNodeInfo>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getGetNodeInfoQueryKey()
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getNodeInfo>>> = ({
     signal,
-  }) => getNodeInfo(signal)
+  }) => getNodeInfo(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getNodeInfo>>,
@@ -172,6 +181,7 @@ export function useGetNodeInfo<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -193,6 +203,7 @@ export function useGetNodeInfo<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -206,6 +217,7 @@ export function useGetNodeInfo<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getNodeInfo>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -220,6 +232,7 @@ export function useGetNodeInfo<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getNodeInfo>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -244,12 +257,14 @@ Fetch statistics for one or several Garage nodes.
 *Note: do not try to parse the `freeform` field of the response, it is given as a string specifically because its format is not stable.*
     
  */
-export const getNodeStatistics = (signal?: AbortSignal) => {
-  return customInstance<MultiResponseLocalGetNodeStatisticsResponse>({
-    url: `/proxy/v2/GetNodeStatistics`,
-    method: 'GET',
-    signal,
-  })
+export const getNodeStatistics = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<MultiResponseLocalGetNodeStatisticsResponse>(
+    { url: `/proxy/v2/GetNodeStatistics`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getGetNodeStatisticsQueryKey = () => {
@@ -267,14 +282,15 @@ export const getGetNodeStatisticsQueryOptions = <
       TData
     >
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getGetNodeStatisticsQueryKey()
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getNodeStatistics>>
-  > = ({ signal }) => getNodeStatistics(signal)
+  > = ({ signal }) => getNodeStatistics(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getNodeStatistics>>,
@@ -308,6 +324,7 @@ export function useGetNodeStatistics<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -333,6 +350,7 @@ export function useGetNodeStatistics<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -350,6 +368,7 @@ export function useGetNodeStatistics<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -368,6 +387,7 @@ export function useGetNodeStatistics<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -392,15 +412,19 @@ Launch a repair operation on one or several cluster nodes.
  */
 export const launchRepairOperation = (
   localLaunchRepairOperationRequest: LocalLaunchRepairOperationRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<MultiResponseLocalLaunchRepairOperationResponse>({
-    url: `/proxy/v2/LaunchRepairOperation`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: localLaunchRepairOperationRequest,
-    signal,
-  })
+  return customInstance<MultiResponseLocalLaunchRepairOperationResponse>(
+    {
+      url: `/proxy/v2/LaunchRepairOperation`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: localLaunchRepairOperationRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getLaunchRepairOperationMutationOptions = <
@@ -413,6 +437,7 @@ export const getLaunchRepairOperationMutationOptions = <
     { data: LocalLaunchRepairOperationRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof launchRepairOperation>>,
   TError,
@@ -420,13 +445,13 @@ export const getLaunchRepairOperationMutationOptions = <
   TContext
 > => {
   const mutationKey = ['launchRepairOperation']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof launchRepairOperation>>,
@@ -434,7 +459,7 @@ export const getLaunchRepairOperationMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return launchRepairOperation(data)
+    return launchRepairOperation(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -458,6 +483,7 @@ export const useLaunchRepairOperation = <
       { data: LocalLaunchRepairOperationRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<

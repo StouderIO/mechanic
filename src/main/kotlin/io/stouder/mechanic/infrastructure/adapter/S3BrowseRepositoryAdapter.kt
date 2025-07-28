@@ -9,12 +9,10 @@ import io.stouder.mechanic.infrastructure.configuration.properties.GaragePropert
 import org.springframework.stereotype.Component
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
+import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.s3.S3Client
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest
-import software.amazon.awssdk.services.s3.model.GetObjectRequest
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Request
-import software.amazon.awssdk.services.s3.model.ListObjectsV2Response
+import software.amazon.awssdk.services.s3.model.*
 import java.net.URI
 
 @Component
@@ -71,6 +69,18 @@ class S3BrowseRepositoryAdapter(
             .build()
 
         s3client.deleteObject(request)
+    }
+
+    override fun uploadFile(bucketId: BucketId, path: String, content: ByteArray) {
+        val key = this.garageRepository.getMechanicKeyForBucket(bucketId)
+        val s3client = this.buildClient(key)
+        val bucketInfo = this.garageRepository.getBucketInfo(bucketId)
+
+        val request = PutObjectRequest.builder()
+            .bucket(bucketInfo.identifier)
+            .key(path)
+            .build()
+        s3client.putObject(request, RequestBody.fromBytes(content))
     }
 
     fun buildClient(key: GarageMechanicKey): S3Client = S3Client

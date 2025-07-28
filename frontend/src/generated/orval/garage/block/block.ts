@@ -36,6 +36,8 @@ import type {
   MultiResponseLocalRetryBlockResyncResponse,
 } from '../endpoints.schemas'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
 /**
  * 
 Get detailed information about a data block stored on a Garage node, including all object versions and in-progress multipart uploads that contain a reference to this block.
@@ -43,15 +45,19 @@ Get detailed information about a data block stored on a Garage node, including a
  */
 export const getBlockInfo = (
   localGetBlockInfoRequest: LocalGetBlockInfoRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<MultiResponseLocalGetBlockInfoResponse>({
-    url: `/proxy/v2/GetBlockInfo`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: localGetBlockInfoRequest,
-    signal,
-  })
+  return customInstance<MultiResponseLocalGetBlockInfoResponse>(
+    {
+      url: `/proxy/v2/GetBlockInfo`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: localGetBlockInfoRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getGetBlockInfoMutationOptions = <
@@ -64,6 +70,7 @@ export const getGetBlockInfoMutationOptions = <
     { data: LocalGetBlockInfoRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof getBlockInfo>>,
   TError,
@@ -71,13 +78,13 @@ export const getGetBlockInfoMutationOptions = <
   TContext
 > => {
   const mutationKey = ['getBlockInfo']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof getBlockInfo>>,
@@ -85,7 +92,7 @@ export const getGetBlockInfoMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return getBlockInfo(data)
+    return getBlockInfo(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -105,6 +112,7 @@ export const useGetBlockInfo = <TError = ErrorType<void>, TContext = unknown>(
       { data: LocalGetBlockInfoRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -122,12 +130,14 @@ export const useGetBlockInfo = <TError = ErrorType<void>, TContext = unknown>(
 List data blocks that are currently in an errored state on one or several Garage nodes.
     
  */
-export const listBlockErrors = (signal?: AbortSignal) => {
-  return customInstance<MultiResponseLocalListBlockErrorsResponse>({
-    url: `/proxy/v2/ListBlockErrors`,
-    method: 'GET',
-    signal,
-  })
+export const listBlockErrors = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<MultiResponseLocalListBlockErrorsResponse>(
+    { url: `/proxy/v2/ListBlockErrors`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getListBlockErrorsQueryKey = () => {
@@ -141,14 +151,15 @@ export const getListBlockErrorsQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof listBlockErrors>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getListBlockErrorsQueryKey()
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof listBlockErrors>>> = ({
     signal,
-  }) => listBlockErrors(signal)
+  }) => listBlockErrors(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof listBlockErrors>>,
@@ -182,6 +193,7 @@ export function useListBlockErrors<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -207,6 +219,7 @@ export function useListBlockErrors<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -224,6 +237,7 @@ export function useListBlockErrors<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -242,6 +256,7 @@ export function useListBlockErrors<
         TData
       >
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -268,15 +283,19 @@ This will remove all objects and in-progress multipart uploads that contain the 
  */
 export const purgeBlocks = (
   localPurgeBlocksRequest: LocalPurgeBlocksRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<MultiResponseLocalPurgeBlocksResponse>({
-    url: `/proxy/v2/PurgeBlocks`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: localPurgeBlocksRequest,
-    signal,
-  })
+  return customInstance<MultiResponseLocalPurgeBlocksResponse>(
+    {
+      url: `/proxy/v2/PurgeBlocks`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: localPurgeBlocksRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getPurgeBlocksMutationOptions = <
@@ -289,6 +308,7 @@ export const getPurgeBlocksMutationOptions = <
     { data: LocalPurgeBlocksRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof purgeBlocks>>,
   TError,
@@ -296,13 +316,13 @@ export const getPurgeBlocksMutationOptions = <
   TContext
 > => {
   const mutationKey = ['purgeBlocks']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof purgeBlocks>>,
@@ -310,7 +330,7 @@ export const getPurgeBlocksMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return purgeBlocks(data)
+    return purgeBlocks(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -330,6 +350,7 @@ export const usePurgeBlocks = <TError = ErrorType<void>, TContext = unknown>(
       { data: LocalPurgeBlocksRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -349,15 +370,19 @@ Instruct Garage node(s) to retry the resynchronization of one or several missing
  */
 export const retryBlockResync = (
   localRetryBlockResyncRequest: LocalRetryBlockResyncRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<MultiResponseLocalRetryBlockResyncResponse>({
-    url: `/proxy/v2/RetryBlockResync`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: localRetryBlockResyncRequest,
-    signal,
-  })
+  return customInstance<MultiResponseLocalRetryBlockResyncResponse>(
+    {
+      url: `/proxy/v2/RetryBlockResync`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: localRetryBlockResyncRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getRetryBlockResyncMutationOptions = <
@@ -370,6 +395,7 @@ export const getRetryBlockResyncMutationOptions = <
     { data: LocalRetryBlockResyncRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof retryBlockResync>>,
   TError,
@@ -377,13 +403,13 @@ export const getRetryBlockResyncMutationOptions = <
   TContext
 > => {
   const mutationKey = ['retryBlockResync']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof retryBlockResync>>,
@@ -391,7 +417,7 @@ export const getRetryBlockResyncMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return retryBlockResync(data)
+    return retryBlockResync(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -414,6 +440,7 @@ export const useRetryBlockResync = <
       { data: LocalRetryBlockResyncRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<

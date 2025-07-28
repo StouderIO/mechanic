@@ -35,20 +35,26 @@ import type {
   UpdateKeyRequestBody,
 } from '../endpoints.schemas'
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
+
 /**
  * Creates a new API access key.
  */
 export const createKey = (
   updateKeyRequestBody: UpdateKeyRequestBody,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetKeyInfoResponse>({
-    url: `/proxy/v2/CreateKey`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: updateKeyRequestBody,
-    signal,
-  })
+  return customInstance<GetKeyInfoResponse>(
+    {
+      url: `/proxy/v2/CreateKey`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateKeyRequestBody,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getCreateKeyMutationOptions = <
@@ -61,6 +67,7 @@ export const getCreateKeyMutationOptions = <
     { data: UpdateKeyRequestBody },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createKey>>,
   TError,
@@ -68,13 +75,13 @@ export const getCreateKeyMutationOptions = <
   TContext
 > => {
   const mutationKey = ['createKey']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createKey>>,
@@ -82,7 +89,7 @@ export const getCreateKeyMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return createKey(data)
+    return createKey(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -102,6 +109,7 @@ export const useCreateKey = <TError = ErrorType<void>, TContext = unknown>(
       { data: UpdateKeyRequestBody },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -117,13 +125,15 @@ export const useCreateKey = <TError = ErrorType<void>, TContext = unknown>(
 /**
  * Delete a key from the cluster. Its access will be removed from all the buckets. Buckets are not automatically deleted and can be dangling. You should manually delete them before.
  */
-export const deleteKey = (params: DeleteKeyParams, signal?: AbortSignal) => {
-  return customInstance<void>({
-    url: `/proxy/v2/DeleteKey`,
-    method: 'POST',
-    params,
-    signal,
-  })
+export const deleteKey = (
+  params: DeleteKeyParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<void>(
+    { url: `/proxy/v2/DeleteKey`, method: 'POST', params, signal },
+    options,
+  )
 }
 
 export const getDeleteKeyMutationOptions = <
@@ -136,6 +146,7 @@ export const getDeleteKeyMutationOptions = <
     { params: DeleteKeyParams },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteKey>>,
   TError,
@@ -143,13 +154,13 @@ export const getDeleteKeyMutationOptions = <
   TContext
 > => {
   const mutationKey = ['deleteKey']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteKey>>,
@@ -157,7 +168,7 @@ export const getDeleteKeyMutationOptions = <
   > = (props) => {
     const { params } = props ?? {}
 
-    return deleteKey(params)
+    return deleteKey(params, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -177,6 +188,7 @@ export const useDeleteKey = <TError = ErrorType<void>, TContext = unknown>(
       { params: DeleteKeyParams },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -197,13 +209,15 @@ You can search by specifying the exact key identifier (`id`) or by specifying a 
 For confidentiality reasons, the secret key is not returned by default: you must pass the `showSecretKey` query parameter to get it.
     
  */
-export const getKeyInfo = (params?: GetKeyInfoParams, signal?: AbortSignal) => {
-  return customInstance<GetKeyInfoResponse>({
-    url: `/proxy/v2/GetKeyInfo`,
-    method: 'GET',
-    params,
-    signal,
-  })
+export const getKeyInfo = (
+  params?: GetKeyInfoParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<GetKeyInfoResponse>(
+    { url: `/proxy/v2/GetKeyInfo`, method: 'GET', params, signal },
+    options,
+  )
 }
 
 export const getGetKeyInfoQueryKey = (params?: GetKeyInfoParams) => {
@@ -219,15 +233,16 @@ export const getGetKeyInfoQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getKeyInfo>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
 ) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getGetKeyInfoQueryKey(params)
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getKeyInfo>>> = ({
     signal,
-  }) => getKeyInfo(params, signal)
+  }) => getKeyInfo(params, requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getKeyInfo>>,
@@ -258,6 +273,7 @@ export function useGetKeyInfo<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -280,6 +296,7 @@ export function useGetKeyInfo<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -294,6 +311,7 @@ export function useGetKeyInfo<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getKeyInfo>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -309,6 +327,7 @@ export function useGetKeyInfo<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getKeyInfo>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -335,15 +354,19 @@ Imports an existing API key. This feature must only be used for migrations and b
  */
 export const importKey = (
   importKeyRequest: ImportKeyRequest,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetKeyInfoResponse>({
-    url: `/proxy/v2/ImportKey`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: importKeyRequest,
-    signal,
-  })
+  return customInstance<GetKeyInfoResponse>(
+    {
+      url: `/proxy/v2/ImportKey`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: importKeyRequest,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getImportKeyMutationOptions = <
@@ -356,6 +379,7 @@ export const getImportKeyMutationOptions = <
     { data: ImportKeyRequest },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof importKey>>,
   TError,
@@ -363,13 +387,13 @@ export const getImportKeyMutationOptions = <
   TContext
 > => {
   const mutationKey = ['importKey']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof importKey>>,
@@ -377,7 +401,7 @@ export const getImportKeyMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return importKey(data)
+    return importKey(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -397,6 +421,7 @@ export const useImportKey = <TError = ErrorType<void>, TContext = unknown>(
       { data: ImportKeyRequest },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -412,12 +437,14 @@ export const useImportKey = <TError = ErrorType<void>, TContext = unknown>(
 /**
  * Returns all API access keys in the cluster.
  */
-export const listKeys = (signal?: AbortSignal) => {
-  return customInstance<ListKeysResponse>({
-    url: `/proxy/v2/ListKeys`,
-    method: 'GET',
-    signal,
-  })
+export const listKeys = (
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ListKeysResponse>(
+    { url: `/proxy/v2/ListKeys`, method: 'GET', signal },
+    options,
+  )
 }
 
 export const getListKeysQueryKey = () => {
@@ -431,14 +458,15 @@ export const getListKeysQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof listKeys>>, TError, TData>
   >
+  request?: SecondParameter<typeof customInstance>
 }) => {
-  const { query: queryOptions } = options ?? {}
+  const { query: queryOptions, request: requestOptions } = options ?? {}
 
   const queryKey = queryOptions?.queryKey ?? getListKeysQueryKey()
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof listKeys>>> = ({
     signal,
-  }) => listKeys(signal)
+  }) => listKeys(requestOptions, signal)
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof listKeys>>,
@@ -468,6 +496,7 @@ export function useListKeys<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -489,6 +518,7 @@ export function useListKeys<
         >,
         'initialData'
       >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -502,6 +532,7 @@ export function useListKeys<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof listKeys>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -516,6 +547,7 @@ export function useListKeys<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof listKeys>>, TError, TData>
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -542,15 +574,19 @@ Updates information about the specified API access key.
  */
 export const updateKey = (
   updateKeyRequestBody: UpdateKeyRequestBody,
+  options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<GetKeyInfoResponse>({
-    url: `/proxy/v2/UpdateKey`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: updateKeyRequestBody,
-    signal,
-  })
+  return customInstance<GetKeyInfoResponse>(
+    {
+      url: `/proxy/v2/UpdateKey`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateKeyRequestBody,
+      signal,
+    },
+    options,
+  )
 }
 
 export const getUpdateKeyMutationOptions = <
@@ -563,6 +599,7 @@ export const getUpdateKeyMutationOptions = <
     { data: UpdateKeyRequestBody },
     TContext
   >
+  request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateKey>>,
   TError,
@@ -570,13 +607,13 @@ export const getUpdateKeyMutationOptions = <
   TContext
 > => {
   const mutationKey = ['updateKey']
-  const { mutation: mutationOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateKey>>,
@@ -584,7 +621,7 @@ export const getUpdateKeyMutationOptions = <
   > = (props) => {
     const { data } = props ?? {}
 
-    return updateKey(data)
+    return updateKey(data, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -604,6 +641,7 @@ export const useUpdateKey = <TError = ErrorType<void>, TContext = unknown>(
       { data: UpdateKeyRequestBody },
       TContext
     >
+    request?: SecondParameter<typeof customInstance>
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
