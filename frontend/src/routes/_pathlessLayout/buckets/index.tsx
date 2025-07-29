@@ -1,21 +1,36 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useCallback } from 'react'
-import { toast } from 'sonner'
 import BucketCard from '@/components/buckets/bucket-card.tsx'
 import { CreateBucketDialog } from '@/components/buckets/dialogs/create-bucket-dialog.tsx'
 import { PageError } from '@/components/composed/page-error'
 import { Spinner } from '@/components/ui/spinner.tsx'
 import { H3 } from '@/components/ui/typography/h3.tsx'
-import { listBuckets } from '@/generated/orval/garage/bucket/bucket.ts'
+import {
+  getBucketInfo,
+  listBuckets,
+} from '@/generated/orval/garage/bucket/bucket.ts'
 import { getMetaInfo } from '@/generated/orval/mechanic/meta-controller/meta-controller.ts'
 
 export const Route = createFileRoute('/_pathlessLayout/buckets/')({
   component: BucketsPage,
-  loader: () =>
-    Promise.all([listBuckets(), getMetaInfo()]).then(([buckets, meta]) => ({
-      buckets,
+  loader: async () => {
+    const [buckets, meta] = await Promise.all([listBuckets(), getMetaInfo()])
+
+    const bucketsWithInfos = await Promise.all(
+      buckets.map(async (bucket) => {
+        const info = await getBucketInfo({ id: bucket.id })
+        return {
+          ...bucket,
+          info,
+        }
+      }),
+    )
+
+    return {
+      buckets: bucketsWithInfos,
       meta,
-    })),
+    }
+  },
   errorComponent: ({ error }) => (
     <PageError title="Error while loading buckets" error={error} />
   ),
@@ -26,10 +41,7 @@ function BucketsPage() {
   const { buckets, meta } = Route.useLoaderData()
   const navigate = Route.useNavigate()
 
-  const refresh = useCallback(
-    () => navigate({ to: '.' }).catch(toast.error),
-    [navigate],
-  )
+  const refresh = useCallback(() => navigate({ to: '.' }), [navigate])
 
   return (
     <div className="flex flex-col w-full gap-4">
@@ -46,11 +58,7 @@ function BucketsPage() {
         {buckets.map((bucket) => (
           <BucketCard
             key={bucket.id}
-            id={bucket.id}
-            aliases={[
-              ...bucket.globalAliases,
-              ...bucket.localAliases.map((alias) => alias.alias),
-            ]}
+            bucket={bucket}
             browsable={meta.browseEnabled}
           />
         ))}

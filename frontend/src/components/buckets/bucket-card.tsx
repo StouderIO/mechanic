@@ -1,14 +1,8 @@
 import { Link } from '@tanstack/react-router'
-import {
-  AlertCircleIcon,
-  BadgeCheckIcon,
-  CogIcon,
-  FolderIcon,
-} from 'lucide-react'
+import { BadgeCheckIcon, CogIcon, FolderIcon } from 'lucide-react'
 import { useMemo } from 'react'
 import BucketStats from '@/components/buckets/bucket-stats.tsx'
 import { TooltipText } from '@/components/composed/tooltip-text.tsx'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx'
 import { Badge } from '@/components/ui/badge.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import {
@@ -19,45 +13,50 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card.tsx'
-import { Skeleton } from '@/components/ui/skeleton.tsx'
 import { H3 } from '@/components/ui/typography/h3.tsx'
-import { useGetBucketInfo } from '@/generated/orval/garage/bucket/bucket'
+import type {
+  GetBucketInfoResponse,
+  ListBucketsResponseItem,
+} from '@/generated/orval/garage/endpoints.schemas.ts'
+
+export interface BucketWithInfo extends ListBucketsResponseItem {
+  info: GetBucketInfoResponse
+}
 
 interface BucketCardProps {
-  id: string
-  aliases: string[]
+  bucket: BucketWithInfo
   browsable: boolean
 }
-export default function BucketCard({
-  id,
-  aliases,
-  browsable,
-}: BucketCardProps) {
-  const { data, error, isLoading, isError, isSuccess } = useGetBucketInfo({
-    id,
-  })
+export default function BucketCard({ bucket, browsable }: BucketCardProps) {
+  const id = useMemo(() => bucket.id, [bucket.id])
 
-  const bucketInfo = useMemo(() => data ?? null, [data])
+  const aliases = useMemo(
+    () => [
+      ...bucket.globalAliases,
+      ...bucket.localAliases.map((alias) => alias.alias),
+    ],
+    [bucket],
+  )
 
   const storage = useMemo(
     () =>
-      bucketInfo === null
+      bucket === null
         ? { value: 0, quota: 0 }
         : {
-            value: bucketInfo.bytes,
-            quota: bucketInfo.quotas.maxSize ?? undefined,
+            value: bucket.info.bytes,
+            quota: bucket.info.quotas.maxSize ?? undefined,
           },
-    [bucketInfo],
+    [bucket],
   )
   const objects = useMemo(
     () =>
-      bucketInfo === null
+      bucket.info === null
         ? { value: 0, quota: 0 }
         : {
-            value: bucketInfo.objects,
-            quota: bucketInfo.quotas.maxObjects ?? undefined,
+            value: bucket.info.objects,
+            quota: bucket.info.quotas.maxObjects ?? undefined,
           },
-    [bucketInfo],
+    [bucket.info],
   )
 
   return (
@@ -73,20 +72,7 @@ export default function BucketCard({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Skeleton className="w-full h-16" />
-            <Skeleton className="w-full h-16" />
-          </div>
-        )}
-        {isError && (
-          <Alert variant="destructive">
-            <AlertCircleIcon />
-            <AlertTitle>Error while loading bucket infos.</AlertTitle>
-            <AlertDescription>{error?.message}</AlertDescription>
-          </Alert>
-        )}
-        {isSuccess && <BucketStats storage={storage} objects={objects} />}
+        <BucketStats storage={storage} objects={objects} />
       </CardContent>
       <CardFooter>
         <div className="w-full flex flex-row-reverse justify-between">
@@ -104,7 +90,7 @@ export default function BucketCard({
               </Button>
             </Link>
           </div>
-          {isSuccess && bucketInfo?.websiteAccess && (
+          {bucket.info.websiteAccess && (
             <Badge variant="secondary">
               <BadgeCheckIcon /> Website enabled
             </Badge>
