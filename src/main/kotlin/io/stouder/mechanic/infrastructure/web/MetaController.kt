@@ -14,7 +14,7 @@ class MetaController(private val mechanicProperties: MechanicProperties) {
     fun getMetaInfo(): ResponseEntity<MetaInfoResponse> {
         return ResponseEntity.ok(
             MetaInfoResponse(
-                Version.current,
+                Version.CURRENT,
                 this.mechanicProperties.browse.enable
             )
         )
