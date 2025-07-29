@@ -18,10 +18,6 @@ export const customInstance = <T>(
   options?: AxiosRequestConfig,
 ): Promise<T> => {
   const source = Axios.CancelToken.source()
-  console.log('request', {
-    ...config,
-    cancelToken: source.token,
-  })
   const promise = AXIOS_INSTANCE({
     ...config,
     ...options,
