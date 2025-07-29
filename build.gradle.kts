@@ -78,7 +78,7 @@ tasks.register("generateVersionClass") {
             package io.stouder.mechanic.infrastructure
             
             object Version {
-                const val current = "${project.version}"
+                const val CURRENT = "${project.version}"
             }
         """.trimIndent())
     }
