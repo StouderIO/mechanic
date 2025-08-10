@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
+import java.nio.file.Path
 import java.nio.file.Paths
 
 @RestController
@@ -68,12 +69,8 @@ class BucketBrowserController(
             .filter { it.originalFilename != null }
             .filter { !it.isEmpty }
             .forEach {
-                val localPath = if (path.isEmpty()) {
-                    it.originalFilename.orEmpty()
-                } else {
-                    "$path/${it.originalFilename}"
-                }
-                this.uploadFileUseCase.uploadFile(bucketId, localPath, it.bytes)
+                val filePath = Paths.get(path, it.originalFilename).toString()
+                this.uploadFileUseCase.uploadFile(bucketId, filePath, it.bytes)
             }
         return ResponseEntity.ok().build()
     }

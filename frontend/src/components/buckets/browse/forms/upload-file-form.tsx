@@ -43,7 +43,7 @@ function UploadFileForm({ bucketId, path, onUploaded }: UploadFileFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      prefix: undefined,
+      prefix: path,
       files: [],
     },
   })
@@ -71,19 +71,16 @@ function UploadFileForm({ bucketId, path, onUploaded }: UploadFileFormProps) {
     [form],
   )
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const submitUpload = useCallback(
-    async ({ prefix, files }: FormData) => {
+    async ({ prefix: path, files }: FormData) => {
       const formData = new FormData()
       files.forEach((file) => formData.append('files', file))
       try {
-        const cleanPrefix = prefix?.replace(/\/$/, '').replace(/^\//, '')
         await uploadBucketFiles(
           bucketId,
           {
-            path:
-              path === '' && cleanPrefix
-                ? cleanPrefix
-                : `${path}/${cleanPrefix}`,
+            path: path ?? '',
             files: [],
           },
           {
@@ -99,7 +96,7 @@ function UploadFileForm({ bucketId, path, onUploaded }: UploadFileFormProps) {
       toast.success(`Files uploaded successfully.`)
       onUploaded()
     },
-    [bucketId, path, form, onUploaded],
+    [bucketId, form, onUploaded],
   )
 
   const files = form.watch('files')
