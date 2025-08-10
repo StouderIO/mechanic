@@ -52,8 +52,7 @@ function DeleteBucketDialog({
           <DialogTitle>Delete bucket</DialogTitle>
           <P>
             Are you really sure you want to delete this bucket? <br />
-            This action cannot be undone. <br />
-            All the data in this bucket will be permanently deleted.
+            The action will fail if there are any files in the bucket.
           </P>
           <Button
             variant="destructive"
