@@ -232,7 +232,7 @@ export const getUploadBucketFilesMutationOptions = <
     { bucketId: string; params: UploadBucketFilesParams }
   > = (props) => {
     const { bucketId, params } = props ?? {}
-    console.log('requestOptions', requestOptions)
+
     return uploadBucketFiles(bucketId, params, requestOptions)
   }
 

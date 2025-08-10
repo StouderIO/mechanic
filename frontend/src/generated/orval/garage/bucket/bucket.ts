@@ -30,6 +30,7 @@ import type {
   CleanupIncompleteUploadsRequest,
   CleanupIncompleteUploadsResponse,
   CreateBucketRequest,
+  DeleteBucketParams,
   GetBucketInfoParams,
   GetBucketInfoResponse,
   InspectObjectParams,
@@ -226,11 +227,12 @@ Deletes a storage bucket. A bucket cannot be deleted if it is not empty.
     
  */
 export const deleteBucket = (
+  params: DeleteBucketParams,
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
   return customInstance<void>(
-    { url: `/proxy/v2/DeleteBucket`, method: 'POST', signal },
+    { url: `/proxy/v2/DeleteBucket`, method: 'POST', params, signal },
     options,
   )
 }
@@ -242,14 +244,14 @@ export const getDeleteBucketMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof deleteBucket>>,
     TError,
-    void,
+    { params: DeleteBucketParams },
     TContext
   >
   request?: SecondParameter<typeof customInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteBucket>>,
   TError,
-  void,
+  { params: DeleteBucketParams },
   TContext
 > => {
   const mutationKey = ['deleteBucket']
@@ -263,9 +265,11 @@ export const getDeleteBucketMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteBucket>>,
-    void
-  > = () => {
-    return deleteBucket(requestOptions)
+    { params: DeleteBucketParams }
+  > = (props) => {
+    const { params } = props ?? {}
+
+    return deleteBucket(params, requestOptions)
   }
 
   return { mutationFn, ...mutationOptions }
@@ -282,7 +286,7 @@ export const useDeleteBucket = <TError = ErrorType<void>, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof deleteBucket>>,
       TError,
-      void,
+      { params: DeleteBucketParams },
       TContext
     >
     request?: SecondParameter<typeof customInstance>
@@ -291,7 +295,7 @@ export const useDeleteBucket = <TError = ErrorType<void>, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof deleteBucket>>,
   TError,
-  void,
+  { params: DeleteBucketParams },
   TContext
 > => {
   const mutationOptions = getDeleteBucketMutationOptions(options)

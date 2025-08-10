@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { BucketManageDangerCard } from '@/components/buckets/manage/bucket-manage-danger-card.tsx'
 import { BucketManageInfoCard } from '@/components/buckets/manage/bucket-manage-info-card'
 import { BucketManagePermissionsCard } from '@/components/buckets/manage/bucket-manage-permissions-card.tsx'
 import { PageError } from '@/components/composed/page-error.tsx'
@@ -34,6 +35,7 @@ function BucketPage() {
         keys={keys}
         navigate={navigate}
       />
+      <BucketManageDangerCard bucketInfo={bucketInfo} navigate={navigate} />
     </div>
   )
 }

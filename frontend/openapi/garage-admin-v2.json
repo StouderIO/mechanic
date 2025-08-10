@@ -437,7 +437,7 @@
         "parameters": [
           {
             "name": "id",
-            "in": "path",
+            "in": "query",
             "description": "ID of the bucket to delete",
             "required": true,
             "schema": {

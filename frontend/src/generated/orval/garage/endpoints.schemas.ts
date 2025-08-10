@@ -1391,6 +1391,13 @@ export type DeleteAdminTokenParams = {
   id: string
 }
 
+export type DeleteBucketParams = {
+  /**
+   * ID of the bucket to delete
+   */
+  id: string
+}
+
 export type DeleteKeyParams = {
   /**
    * Access key ID
