@@ -126,6 +126,7 @@ but this isn't possible until Garage adds CORS configuration support.
 Contributions are welcome =)
 
 ## Special thanks
+- [Garage's contributors](https://git.deuxfleurs.fr/Deuxfleurs/garage/activity/contributors) for building Garage.
 - [khairul169](https://github.com/khairul169) for the [garage-webui](https://github.com/khairul169/garage-webui), which inspired this project.
 
 ## Screenshots
